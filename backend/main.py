@@ -38,3 +38,7 @@ app.include_router(keywords.router)
 app.include_router(categories.router)
 app.include_router(admin.router)
 
+@app.get("/")
+def root():
+    return {"msg": "API is running"}
+
