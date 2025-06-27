@@ -27,7 +27,8 @@ export const useSidebar = () => {
 export const SidebarProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [isExpanded, setIsExpanded] = useState(true); // 預設展開
+  // const [isExpanded, setIsExpanded] = useState(true); // 預設展開
+  const [isExpanded] = useState(true); // 預設展開
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [activeItem, setActiveItem] = useState<string | null>(null);
