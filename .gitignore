@@ -1,0 +1,29 @@
+# Node.js
+node_modules/
+.next/
+.env
+.env.*
+
+# Python
+__pycache__/
+*.pyc
+venv/
+.env
+*.sqlite
+*.db
+
+# Logs
+logs/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# VSCode
+.vscode/
+
+# Misc
+*.swp
+*.swo
+.idea/
