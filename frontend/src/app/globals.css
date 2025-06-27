@@ -1,0 +1,51 @@
+@import "tailwindcss"; /* 重要 全局編譯tailwind v4版本 */
+
+
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #b686d1;
+    --foreground: #4fffbd;
+  }
+}
+
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/*sidebar*/
+aside {
+  background: #9258e8;
+  margin-left: -0.5rem;
+  margin-top: -0.5rem;
+  width: 7.5rem;
+}
+
+/*header*/
+header {
+  background: #2e8396d1;
+  padding: 1rem;
+  text-align: center;
+  font-weight: bold;
+  margin-left: 7rem;
+  margin-top: -0.5rem;
+}
+
+
+
+/*首頁主內容*/
+.main-content {
+  margin-left: 7rem; /* 避開 sidebar */
+  margin-top: 5.3rem; /* 避開 header */
+  background: #a3eada59;
+  flex: 1;
+  padding: 2rem;
+}
