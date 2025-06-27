@@ -6,3 +6,9 @@ export interface Category {
   productCount7d?: number;
   productCount30d?: number;
 }
+
+export interface CategoryStat {
+  category: string;
+  count7d: number;
+  count30d: number;
+}

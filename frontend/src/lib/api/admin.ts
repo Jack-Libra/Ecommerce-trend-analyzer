@@ -1,4 +1,6 @@
 // lib/api/admin.ts
+import type { CrawlLog } from "@/types/crawl";
+
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
 
 // Crawl Logs (Admin) 後台爬蟲日誌
