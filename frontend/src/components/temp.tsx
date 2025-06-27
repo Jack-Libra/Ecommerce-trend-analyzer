@@ -1,4 +1,3 @@
-
 // components/ProductTrend.tsx 單一商品分析頁
 "use client";
 

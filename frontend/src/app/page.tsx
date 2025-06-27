@@ -7,9 +7,7 @@ import ProductRankingChart from "@/components/charts/ProductRankingChart";
 import GrowthRadarChart from "@/components/charts/GrowthRadarChart";
 
 import { fetchTopProducts } from "@/lib/api/product";
-import type { Product } from "@/types/product";
-
-
+import type { Product, ProductSnapshot } from "@/types/product";
 
 export default function HomePage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -21,7 +19,7 @@ export default function HomePage() {
         const data = await fetchTopProducts();
         // 轉換欄位，並從 snapshots 取最新價格
         setProducts(
-          data.map((item: any) => ({
+          data.map((item: Product) => ({
             ...item,
             name: item.title, // 給 ProductCard 用
             platform: item.platform_id,
@@ -33,7 +31,7 @@ export default function HomePage() {
             avgPrice:
               item.snapshots && item.snapshots.length > 0
                 ? (
-                    item.snapshots.reduce((sum: number, s: any) => sum + (s.price || 0), 0) /
+                    item.snapshots.reduce((sum: number, s: ProductSnapshot) => sum + (s.price || 0), 0) /
                     item.snapshots.length
                   )
                 : undefined,

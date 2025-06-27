@@ -1,11 +1,5 @@
 // lib/api/keywords.ts
-import type {
-  Product,
-  ProductSnapshot,
-  Keyword,
-  CategoryStat,
-  CrawlLog
-} from "@/types";
+import type { Keyword } from "@/types";
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
 
 // Keyword Stats 熱門關鍵字分析

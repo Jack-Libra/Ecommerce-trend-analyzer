@@ -1,7 +1,8 @@
 // components/ProductCard.tsx
 import React from "react";
+import type { Product } from "@/types/product";
 
-const ProductCard: React.FC<any> = ({ name, price, platform, avgPrice }) => {
+const ProductCard: React.FC<Product> = ({ name, price, platform, avgPrice }) => {
   return (
     <div className="border p-4 rounded-xl shadow bg-white">
       <h3 className="font-semibold text-lg mb-1">{name}</h3>

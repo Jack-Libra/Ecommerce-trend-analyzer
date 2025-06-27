@@ -1,12 +1,12 @@
 "use client";
 import React, { useRef, useState, useEffect } from "react";
-import Link from "next/link";
-import Image from "next/image";
+// import Link from "next/link";
+// import Image from "next/image";
 import { useSidebar } from "@/contexts/SidebarContext";
 import { useTheme } from "@/contexts/ThemeContext";
 
 const Header: React.FC = () => {
-  const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
+  const { toggleSidebar, toggleMobileSidebar } = useSidebar();
   const { theme, toggleTheme } = useTheme();
   const [isUserMenuOpen, setUserMenuOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);

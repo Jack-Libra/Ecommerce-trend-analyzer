@@ -86,7 +86,6 @@ const UserBlock = () => (
 
 // Sidebar 組件
 const Sidebar: React.FC = () => {
-  const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const pathname = usePathname();
 
 /* //fixed top-0 left-0 h-screen 
