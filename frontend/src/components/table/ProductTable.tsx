@@ -1,7 +1,5 @@
 "use client";
 
-import { Table } from "@/components/ui/table";
-
 export interface Product {
   id: number;
   name: string;
@@ -14,7 +12,7 @@ export default function ProductTable({ data }: { data: Product[] }) {
   return (
     <div className="bg-white p-4 rounded-xl shadow w-full">
       <h2 className="text-lg font-bold mb-4">商品資料表</h2>
-      <Table>
+      <table className="w-full">
         <thead>
           <tr>
             <th>名稱</th>
@@ -33,7 +31,7 @@ export default function ProductTable({ data }: { data: Product[] }) {
             </tr>
           ))}
         </tbody>
-      </Table>
+      </table>
     </div>
   );
 }
