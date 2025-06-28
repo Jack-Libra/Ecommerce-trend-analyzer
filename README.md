@@ -51,18 +51,16 @@
    cd ../backend
    pip install -r requirements.txt
    ```
-3. 於各自資料夾建立對應的 .env 檔案。
-
-3.1 前端（frontend/.env.local）
-```
-NEXT_PUBLIC_API_BASE_URL=https://... .onrender.com # render 佈署網址
-```
-
-3.2 後端（backend/.env）
-```
-DATABASE_URL=postgresql://... # Supabase 連線字串
-SECRET_KEY=your-secret 
-```
+3. 於各自資料夾建立對應的 .env 檔案：
+   - 前端（frontend/.env.local）
+     ```
+     NEXT_PUBLIC_API_BASE_URL=https://... .onrender.com # render 佈署網址
+     ```
+   - 後端（backend/.env）
+     ```
+     DATABASE_URL=postgresql://... # Supabase 連線字串
+     SECRET_KEY=your-secret 
+     ```
 
 
 
