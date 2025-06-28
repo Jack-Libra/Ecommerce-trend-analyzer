@@ -21,17 +21,50 @@
 - **Supabase**：雲端 PostgreSQL 資料庫服務，儲存商品、關鍵字、快照等資料。
 - **Render**：後端 API 雲端部署平台，支援自動化 CI/CD。
 
-## 部署與架構(Vercel+Render)
-專案完全基於 Serverless 架構開發與部署
-- **Supabase**：
+## 部署與架構 (Vercel + Render)
+採用 Serverless 架構，前後端分離部署，確保高可用性與彈性擴展。
+- **Supabase**：雲端 PostgreSQL 資料庫，負責資料儲存與備份。
+- **Vercel**：前端（Next.js）自動化部署平台，支援 CI/CD、Preview、Production 多環境，並可自動讀取環境變數。
+- **N8N**：自動化流程服務，負責爬蟲排程、資料同步等任務，可用 Docker 部署。
+- **Render**：後端（FastAPI）自動化部署平台，支援 API Server、資料庫、定時任務等。
+- **Cloudflare**：DNS 解析與安全防護，提升網站存取速度與穩定性。
 
-- **Vercel**：
+### 部署說明
+- 前端程式碼推送至 GitHub，Vercel 會自動 build 並部署，環境變數（如 `NEXT_PUBLIC_API_BASE_URL`）可於 Vercel 後台設定。
+- 後端（FastAPI）推送至 GitHub，Render 會自動 build 並啟動 API 服務，需設定 CORS 允許 Vercel 網域。
+- Supabase 作為資料庫服務，與 FastAPI 連線。
+- N8N 可用於自動化爬蟲排程、API 觸發等。
 
-- **N8N**：
+## 本地下載與 .env 檔案說明
+請於各自平台設定環境變數或本地建立 `.env.local`、`.env` 檔案。
 
-- **Cloudflare**：
+### 本地下載專案步驟
+1. 下載專案：
+   ```bash
+   git clone https://github.com/your-username/ecommerce-trend-analyzer.git
+   ```
+2. 進入 frontend 或 backend 資料夾，依需求安裝依賴：
+   ```bash
+   cd frontend
+   pnpm install
+   # 或
+   cd ../backend
+   pip install -r requirements.txt
+   ```
+3. 於各自資料夾建立對應的 .env 檔案。
 
-- **Render**：
+3.1 前端（frontend/.env.local）
+```
+NEXT_PUBLIC_API_BASE_URL=https://... .onrender.com # render 佈署網址
+```
+
+3.2 後端（backend/.env）
+```
+DATABASE_URL=postgresql://... # Supabase 連線字串
+SECRET_KEY=your-secret 
+```
+
+
 
 
 
