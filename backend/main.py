@@ -3,7 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from routers import products, keywords, categories, admin
 
-from middleware.cors import get_cors_middleware
 from middleware.logging import LoggingMiddleware
 from middleware.auth import AuthMiddleware
 from middleware.exception_handler import add_global_exception_handler
@@ -12,8 +11,6 @@ import os
 
 app = FastAPI()
 
-# CORS
-get_cors_middleware(app)
 
 # 請求日誌
 app.add_middleware(LoggingMiddleware)
