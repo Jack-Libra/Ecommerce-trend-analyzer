@@ -21,10 +21,16 @@ app.add_middleware(LoggingMiddleware)
 # 驗證 token
 app.add_middleware(AuthMiddleware, secret_key=os.getenv("SECRET_KEY", "your-secret"), algorithms=["HS256"])
 
-# CORS
+
+# 設定CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # 或 ["*"] 開發用
+    allow_origins=[
+        "https://ecommerce-trend-analyzer.vercel.app",
+        "https://ecommerce-trend-analyzer-ib1e.vercel.app",
+        "https://ecommerce-trend-analyzer-ib1e-git-main-jack-libras-projects.vercel.app",
+        "https://ecommerce-trend-analyzer-ib1e-pm9i9jzy1-jack-libras-projects.vercel.app"
+        ],  # 部署時請改為你的前端網址 
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
