@@ -1,4 +1,19 @@
 # Ecommerce-trend-analyzer
+## 特色功能
+
+- **跨平台電商趨勢分析**：自動整合多個電商平台（如蝦皮、momo、PChome 等）商品資料，提供即時熱門商品排行榜、價格趨勢、關鍵字熱度、類別分佈等多維度分析。
+- **Serverless 雲端架構**：前端（Vercel）與後端（Render）完全分離，支援自動化 CI/CD，部署彈性高、維運簡單。
+- **自動化爬蟲與資料流**：結合 N8N、Crawl4ai 與 Docker，實現商品資料自動抓取、清洗、入庫與 API 服務全流程自動化。
+- **爬蟲優點（Crawl4ai CSS 策略）**：採用 crawl4ai 的 CSS selector 策略，直接定位網頁資料欄位，無需依賴大量 markdown 文件、LLM 或 AI agent，維護簡單、效能高且穩定性佳。
+- **互動式儀表板**：前端採用 Next.js + Tailwind CSS + shadcn/ui，提供現代化、響應式、互動性高的數據視覺化介面。
+- **型別安全與高可維護性**：全專案 TypeScript（前端）+ Python（後端），型別嚴謹，易於擴充與維護。
+- **資料庫雲端化**：採用 Supabase（PostgreSQL）雲端資料庫，資料安全、備份與擴展性佳。
+- **彈性 API 串接**：所有前端資料皆透過 RESTful API 串接，方便第三方擴充與整合。
+- **高安全性設計**：後端支援 JWT 驗證、CORS 控制，敏感資訊皆以環境變數管理。
+- **開源授權**：MIT License，歡迎二次開發與商業應用。
+
+> 適合資料分析、電商監控、商業情報、學術研究等多種場景，並可快速擴充至其他平台或資料來源。
+
 ## 使用工具&框架
 ### 前端（使用 Next.js 架構）
 採用 Next.js App Router 架構，結合 TypeScript、Tailwind CSS 與 shadcn/ui，打造現代化、響應式的電商趨勢分析儀表板。所有 API 請求皆透過環境變數 NEXT_PUBLIC_API_BASE_URL 串接後端，並支援 Vercel 雲端自動部署
@@ -61,7 +76,14 @@
      DATABASE_URL=postgresql://... # Supabase 連線字串
      SECRET_KEY=your-secret 
      ```
+## 其他
+### 授權
+- **MIT**
 
+### 聯絡方式
+- **信箱**：dafsf60804@gmail.com
+
+### 專案結構.txt幫你更快掌握專案
 
 
 
