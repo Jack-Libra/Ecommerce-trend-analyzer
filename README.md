@@ -45,7 +45,6 @@
 
 ## 本地下載與 .env 檔案說明
 請於各自平台設定環境變數或本地建立 `.env.local`、`.env` 檔案。
-
 ### 本地下載專案步驟
 1. 下載專案：
    ```bash
@@ -68,6 +67,22 @@
      ```
      DATABASE_URL=postgresql://... # Supabase 連線字串
      SECRET_KEY=your-secret 
+     ```
+4. （可選）初始化資料庫結構（需先設定好 backend/.env）：
+   ```bash
+   cd backend
+   alembic upgrade head
+   ```
+5. 啟動專案：
+   - 前端（Next.js）：
+     ```bash
+     cd frontend
+     pnpm dev
+     ```
+   - 後端（FastAPI）：
+     ```bash
+     cd backend
+     uvicorn main:app --reload --host 0.0.0.0 --port 8000
      ```
 ## 其他
 ### 授權
