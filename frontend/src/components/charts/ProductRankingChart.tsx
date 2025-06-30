@@ -23,7 +23,44 @@ export default function ProductRankingChart({ data = [] }: { data?: ProductRanki
             orientation="left"
             interval={0} // 強制每個分類都顯示
             tick={props => {
-              // 產品名稱顯示在 y 軸左側，間距更緊密
+              // 產品名稱顯示在 y 軸左側，間距更緊密，超過寬度自動省略
+              const maxWidth = 90; // px，與 YAxis width 對齊
+              const text = String(props.payload.value);
+              // 建立 canvas 測量字串寬度
+              if (typeof window !== 'undefined') {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                if (ctx) {
+                  ctx.font = '13px sans-serif';
+                  let display = text;
+                  let width = ctx.measureText(display).width;
+                  if (width > maxWidth) {
+                    let i = text.length;
+                    while (i > 0 && ctx.measureText(text.slice(0, i) + '...').width > maxWidth) {
+                      i--;
+                    }
+                    display = text.slice(0, i) + '...';
+                  }
+                  return (
+                    <text
+                      x={0}
+                      y={props.y}
+                      textAnchor="start"
+                      dominantBaseline="middle"
+                      style={{
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        fontSize: 13,
+                        fill: '#666',
+                      }}
+                    >
+                      {display}
+                    </text>
+                  );
+                }
+              }
+              // fallback: 只顯示前 8 字
               return (
                 <text
                   x={0}
@@ -38,9 +75,7 @@ export default function ProductRankingChart({ data = [] }: { data?: ProductRanki
                     fill: '#666',
                   }}
                 >
-                  {String(props.payload.value).length > 10
-                    ? String(props.payload.value).slice(0, 10) + '...'
-                    : props.payload.value}
+                  {text.slice(0, 8) + (text.length > 8 ? '...' : '')}
                 </text>
               );
             }}
