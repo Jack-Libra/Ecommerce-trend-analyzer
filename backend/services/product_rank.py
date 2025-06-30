@@ -4,34 +4,24 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import func
 from datetime import datetime, timedelta
 from models.product import Product
-from models.product_snapshots import ProductSnapshot
+from models.product_snapshots import ProductSnapshot, LatestProductSnapshot
 from schemas.product import ProductRead
 
 from sqlalchemy import select
 
-async def get_top_ranked_products(db: AsyncSession, days: int = 7, limit: int = 10):
-    # 根據快照出現頻率，取熱門商品
-    since = datetime.utcnow() - timedelta(days=days)
-    subq = (
-        select(
-            ProductSnapshot.product_id,
-            func.count().label("score")
-        )
-        .where(ProductSnapshot.captured_at >= since)
-        .group_by(ProductSnapshot.product_id)
-        .order_by(func.count().desc())
-        .limit(limit)
-        .subquery()
-    )
+async def get_top_ranked_products(db: AsyncSession, limit: int = 10):
+    # 直接查詢最新快照物化視圖，依 score 排序，join 產品主表
     stmt = (
-        select(Product, subq.c.score)
-        .join(subq, Product.id == subq.c.product_id)
+        select(Product, LatestProductSnapshot.price, LatestProductSnapshot.score)
+        .join(LatestProductSnapshot, Product.id == LatestProductSnapshot.product_id)
+        .order_by(LatestProductSnapshot.score.desc())
+        .limit(limit)
     )
     result = await db.execute(stmt)
     rows = result.all()
-    # 回傳 dict，包含商品資料與 score
+    # 回傳 dict，包含商品資料、score、price
     return [
-        {**ProductRead.from_orm(row[0]).dict(), "score": row[1]} for row in rows
+        {**ProductRead.from_orm(row[0]).dict(), "price": float(row[1]) if row[1] is not None else None, "score": row[2]} for row in rows
     ]
 
 

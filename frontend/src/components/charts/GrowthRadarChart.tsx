@@ -12,6 +12,7 @@ export interface GrowthData {
   exposure: number;
 }
 
+// 此元件不再使用
 export default function GrowthRadarChart({ data = [] }: { data?: GrowthData[] }) {
   return (
     <div className="bg-white p-4 rounded-xl shadow w-full" style={{ height: 320 }}>

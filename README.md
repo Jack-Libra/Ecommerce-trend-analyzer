@@ -40,17 +40,24 @@
 ### 部署說明
 - 前端程式碼推送至 GitHub，Vercel 會自動 build 並部署，環境變數（如 `NEXT_PUBLIC_API_BASE_URL`）可於 Vercel 後台設定。
 - 後端（FastAPI）推送至 GitHub，Render 會自動 build 並啟動 API 服務，需設定 CORS 允許 Vercel 網域。
+> CORS可於 backend/main.py 設定。
 - Supabase 作為資料庫服務，與 FastAPI 連線。
 - N8N 可用於自動化爬蟲排程、API 觸發等。
 
 ## 本地下載與 .env 檔案說明
 請於各自平台設定環境變數或本地建立 `.env.local`、`.env` 檔案。
+
+
+### 下載前提
+- **N8N**
+- **Crawl4ai**
+- **Docker(可選)**
 ### 本地下載專案步驟
 1. 下載專案：
    ```bash
    git clone https://github.com/your-username/ecommerce-trend-analyzer.git
    ```
-2. 進入 frontend 或 backend 資料夾，依需求安裝依賴：
+2. 進入 frontend 和 backend 資料夾，依需求安裝依賴：
    ```bash
    cd frontend
    pnpm install
@@ -61,7 +68,8 @@
 3. 於各自資料夾建立對應的 .env 檔案：
    - 前端（frontend/.env.local）
      ```
-     NEXT_PUBLIC_API_BASE_URL=https://... .onrender.com # render 佈署網址
+     NEXT_PUBLIC_API_BASE_URL=https://... .onrender.com # render api
+     # NEXT_PUBLIC_API_BASE_URL=http://localhost:8000 # 本地api
      ```
    - 後端（backend/.env）
      ```
@@ -92,6 +100,7 @@
 - **信箱**：dafsf60804@gmail.com
 
 ### 專案結構.txt幫你更快掌握專案
+### 尚處於MVP階段
 
 
 

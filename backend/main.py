@@ -23,6 +23,7 @@ app.add_middleware(AuthMiddleware, secret_key=os.getenv("SECRET_KEY", "your-secr
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
+        "http://localhost:3000", # 本地開發環境
         "https://ecommerce-trend-analyzer.vercel.app",
         "https://ecommerce-trend-analyzer-ib1e.vercel.app",
         "https://ecommerce-trend-analyzer-ib1e-git-main-jack-libras-projects.vercel.app",

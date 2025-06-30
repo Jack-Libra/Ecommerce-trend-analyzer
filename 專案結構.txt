@@ -11,8 +11,8 @@ ecommerce-trend-analyzer/
 │   │   ├── components/                    # 共用元件
 │   │   │   ├── Sidebar.tsx
 │   │   │   ├── Header.tsx
-│   │   │   ├── ProductRankingChart.tsx     # 垂直長條圖（熱門商品排行榜),首頁
-│   │   │   ├── GrowthRadarChart.tsx        # 雷達圖(商品成長雷達圖),首頁
+│   │   │   ├── ProductRankingChart.tsx     # 長條圖（熱門商品排行榜),首頁
+│   │   │   ├── ProductReviewTrendChart.tsx # 折線圖(熱度變化趨勢),首頁
 │   │   │   ├── ProductCard.tsx             # 首頁與類別分析頁
 │   │   │   ├── TrendChart.tsx              # 折線圖（單商品價格趨勢）,單一商品分析頁
 │   │   │   ├── KeywordChart.tsx            # 柱狀圖（熱門關鍵字）,熱門關鍵字分析頁

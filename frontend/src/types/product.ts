@@ -13,6 +13,7 @@ export interface Product {
   category?: string;
   price?: number;
   avgPrice?: number;
+  score?: number; // 後端回傳的熱門分數
 }
 
 export interface ProductSnapshot {

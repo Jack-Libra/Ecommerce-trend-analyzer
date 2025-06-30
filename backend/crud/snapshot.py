@@ -3,10 +3,13 @@ from sqlalchemy.future import select
 from models import ProductSnapshot
 from schemas.snapshot import SnapshotCreate, SnapshotUpdate
 
+# CRUD operations for ProductSnapshot
+# This module provides functions to create, read, update, and delete product snapshots.
 async def get_snapshot(db: AsyncSession, snapshot_id: int):
     result = await db.execute(select(ProductSnapshot).where(ProductSnapshot.id == snapshot_id))
     return result.scalar_one_or_none()
 
+# Get all snapshots for a specific product with pagination support
 async def get_snapshots(db: AsyncSession, product_id: int,skip: int = 0, limit: int = 100):
     result = await db.execute(
         select(ProductSnapshot)
