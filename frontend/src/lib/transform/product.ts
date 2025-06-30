@@ -13,21 +13,28 @@ export function mapProductForFrontend(item: Product): Product {
 }
 
 // 取得過去 7 天 top N 熱門商品的評論數變化資料
-export function getReviewTrendData(products: any[], topN: number = 3) {
+export function getReviewTrendData(
+  products: Product[],
+  topN: number = 3
+): { trend: Record<string, number | string>[]; trendProducts: string[] } {
   const top = products.slice(0, topN);
-  const trendProducts = top.map((p) => p.name ?? p.title);
+  const trendProducts = top.map((p) => (p.name ?? p.title) || "");
   const allDates = Array.from(
     new Set(
       top.flatMap((p) =>
-        (p.snapshots || []).map((s: any) => s.captured_at?.slice(0, 10))
+        (p.snapshots || []).map((s) => s.captured_at?.slice(0, 10) || "")
       )
     )
-  ).sort();
-  const trend: any[] = allDates.map((date) => {
-    const row: any = { date };
+  )
+    .filter(Boolean)
+    .sort();
+  const trend: Record<string, number | string>[] = allDates.map((date) => {
+    const row: Record<string, number | string> = { date };
     top.forEach((p) => {
-      const snap = (p.snapshots || []).find((s: any) => s.captured_at?.slice(0, 10) === date);
-      row[p.name ?? p.title] = snap?.review_count ?? 0;
+      const snap = (p.snapshots || []).find(
+        (s) => (s.captured_at?.slice(0, 10) || "") === date
+      );
+      row[(p.name ?? p.title) || ""] = snap?.review_count ?? 0;
     });
     return row;
   });

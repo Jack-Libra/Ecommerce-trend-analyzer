@@ -8,7 +8,7 @@ import React, { useEffect, useState } from "react";
 import ProductCard from "@/components/cards/ProductCard";
 import ProductRankingChart from "@/components/charts/ProductRankingChart";
 import ProductReviewTrendChart from "@/components/charts/ProductReviewTrendChart";
-
+import type { ReviewTrendPoint } from "@/components/charts/ProductReviewTrendChart";
 // 引入 fetchTopProducts 用於從後端 API 獲取熱門商品資料
 // 引入 mapProductForFrontend 用於將後端商品資料轉換為前端需要的格式
 // 引入 getReviewTrendData 用於計算過去 7 天熱門商品的評論數變化資料
@@ -17,7 +17,7 @@ import {mapProductForFrontend, getReviewTrendData} from "@/lib/transform/product
 
 // 引入 Product 和 ProductSnapshot 類型定義
 // 這些類型定義用於描述商品資料的結構，確保在使用商品資料時具有正確的類型檢查
-import type { Product, ProductSnapshot } from "@/types/product";
+import type { Product } from "@/types/product";
 
 export default function HomePage() {
   // 使用 useState 定義 products 狀態，初始為空陣列，用於存儲從後端獲取的熱門商品資料
@@ -57,7 +57,8 @@ export default function HomePage() {
 
   // 使用 useState 定義 reviewTrendData 狀態，初始為空陣列，用於存儲評論數變化資料
   // 使用 useState 定義 trendProducts 狀態，初始為空陣列，用於存儲過去 7 天熱門商品的名稱
-  const [reviewTrendData, setReviewTrendData] = useState<any[]>([]);
+
+  const [reviewTrendData, setReviewTrendData] = useState<ReviewTrendPoint[]>([]);
   const [trendProducts, setTrendProducts] = useState<string[]>([]);
 
 
@@ -70,7 +71,12 @@ export default function HomePage() {
   useEffect(() => {
     if (products.length === 0) return;
     const { trend, trendProducts } = getReviewTrendData(products, 3); 
-    setReviewTrendData(trend);
+    // Ensure each trend point has a 'date' property
+    const fixedTrend = trend.map((point) => ({
+      date: typeof point.date === "string" ? point.date : "",
+      ...point,
+    }));
+    setReviewTrendData(fixedTrend as ReviewTrendPoint[]);
     setTrendProducts(trendProducts);
   }, [products]);
 
