@@ -100,7 +100,7 @@
 - **信箱**：dafsf60804@gmail.com
 
 ### 實作網頁
--**vercel**：(https://ecommerce-trend-analyzer.vercel.app/)
+- **vercel**：(https://ecommerce-trend-analyzer.vercel.app/)
 
 ### 專案結構.txt幫你更快掌握專案
 ### 尚處於MVP階段
