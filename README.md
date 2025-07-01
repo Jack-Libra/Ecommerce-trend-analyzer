@@ -101,6 +101,7 @@
 
 ### 實作網頁
 - **vercel**：(https://ecommerce-trend-analyzer.vercel.app/)
+- **爬取網頁**：(https://www.amazon.com/-/zh_TW/gp/bestsellers/electronics/ref=pd_zg_ts_electronics)
 
 ### 專案結構.txt幫你更快掌握專案
 ### 尚處於MVP階段
