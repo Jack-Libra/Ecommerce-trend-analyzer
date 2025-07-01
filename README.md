@@ -55,13 +55,13 @@
 
 ### 部署方案比較
 
-#### 方案一：前後端一起佈署（單機/本地開發）
-- **說明**：前端與後端同時於本地或同一伺服器啟動，API 請求直接走本地端。
+#### 方案一：整合式部署（單機/本地開發）
+- **說明**：前端與後端共用 Next.js 專案，統一部署於 Vercel，快速且無冷啟動問題。
 - **適用情境**：開發測試、單機部署、快速驗證。
 - **優點**：設定簡單、無跨域問題、除錯方便。
 - **注意**：API 路徑建議設為 `/api`，環境變數 `NEXT_PUBLIC_API_BASE_URL=/api`。
 
-#### 方案二：前後端獨立佈署（雲端/正式環境）
+#### 方案二：分離式部署（雲端/正式環境）
 - **說明**：前端（Next.js）獨立部署於 Vercel，後端（FastAPI）獨立部署於 Render 或其他雲端平台，API 請求走公開網址。
 - **適用情境**：正式營運、雲端部署、需獨立擴展前後端時。
 - **優點**：彈性擴展、可獨立升級維護、支援多環境。
@@ -99,13 +99,13 @@
 3. 於各自資料夾建立對應的 .env 檔案：
    - 前端（frontend/.env.local）
      ```
-      #方案一 前後端一起佈署
+      #方案一 整合式部署
       NEXT_PUBLIC_API_BASE_URL=/api #api路由
       NEXT_PUBLIC_SUPABASE_URL=https://...supabase.co #Supabase 連線字串
       SUPABASE_SERVICE_ROLE_KEY=your-service-role-key 
       FASTAPI_BASE_URL=http://localhost:8000 # 本地api，佈署vercel時不用連
 
-      #方案二 前後端獨立佈署
+      #方案二 分離式部署
       #NEXT_PUBLIC_API_BASE_URL=https://ecommerce-trend-analyzer.onrender.com #後端render api
       #NEXT_PUBLIC_API_BASE_URL=http://localhost:8000 # 本地api
      ```
@@ -113,7 +113,7 @@
      ```
      #用於Alembic migration
      ALEMBIC_DATABASE_URL=postgresql://postgres:[YOUR-PASSWORD]@db....supabase.co:5432/postgres
-     #方案二 前後端獨立佈署
+     #方案二 分離式部署
      DATABASE_URL=postgresql://... # Supabase 連線字串
      SECRET_KEY=your-secret # 可選
      ```
