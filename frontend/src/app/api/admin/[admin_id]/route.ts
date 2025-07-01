@@ -1,13 +1,19 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
 
+type Context = {
+  params: {
+    admin_id: string;
+  };
+};
+
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-export async function GET(req: NextRequest, { params }: { params: { admin_id: string } }) {
-  const { admin_id } = params;
+export async function GET(req: NextRequest, context: Context) {
+  const { admin_id } = context.params;
   const { data, error } = await supabase
     .from('admin')
     .select('*')
