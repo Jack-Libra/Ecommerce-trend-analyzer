@@ -31,7 +31,7 @@
 
 ## 部署與架構
 
-採用現代雲端分離式架構，支援「前後端一起佈署」與「前後端獨立佈署(分離)」兩種彈性部署模式，適用於開發、測試與正式營運等多元場景。
+採用雲端分離式架構，支援「前後端一起佈署」與「前後端獨立佈署(分離)」兩種彈性部署模式，適用於開發、測試與正式營運等多元場景。
 
 ### 架構總覽
 
@@ -59,28 +59,25 @@
 - **說明**：前端與後端同時於本地或同一伺服器啟動，API 請求直接走本地端。
 - **適用情境**：開發測試、單機部署、快速驗證。
 - **優點**：設定簡單、無跨域問題、除錯方便。
-- **缺點**：不利於彈性擴展，正式環境不建議。
 - **注意**：API 路徑建議設為 `/api`，環境變數 `NEXT_PUBLIC_API_BASE_URL=/api`。
 
 #### 方案二：前後端獨立佈署（雲端/正式環境）
 - **說明**：前端（Next.js）獨立部署於 Vercel，後端（FastAPI）獨立部署於 Render 或其他雲端平台，API 請求走公開網址。
 - **適用情境**：正式營運、雲端部署、需獨立擴展前後端時。
 - **優點**：彈性擴展、可獨立升級維護、支援多環境。
-- **缺點**：需處理 CORS、環境變數、API 網域設定。
 - **注意**：API 路徑設為公開網址，`NEXT_PUBLIC_API_BASE_URL=https://your-api-url`，後端 CORS 需允許前端網域。
 
 ### 部署細節與常見問題
-- **CORS 設定**：後端（FastAPI）需於 `main.py` 設定允許前端網域（如 Vercel domain）。
+- **CORS 設定**：可於 `backend/main.py` 設定允許前端網域（如 Vercel domain）。
 - **環境變數**：前端於 `.env.local` 設定 `NEXT_PUBLIC_API_BASE_URL`、`NEXT_PUBLIC_SUPABASE_URL` 等，後端於 `.env` 設定 `DATABASE_URL`。
-- **API 路由**：前端所有 `/api/xxx` 路由皆直接查詢 Supabase 或後端 API，完全獨立於 FastAPI 內部路由。
-- **資料庫連線**：建議使用 Supabase 雲端服務，確保資料安全與備份。
-- **自動化流程**：N8N 可用於定時爬蟲、資料同步，建議用 Docker 部署於雲端或本地。
+- **API 路由**：前端所有 `src/app/api/xxx` 路由皆直接查詢 Supabase 或後端 API，完全獨立於 FastAPI 內部路由。
+- **資料庫連線**：使用 Supabase 雲端服務，確保資料安全與備份。
+- **自動化流程**：N8N 可用於定時爬蟲、資料同步，使用 Docker 部署於本地或雲端。
 
 > 選擇部署方案時，請依實際需求（開發/測試/正式營運）與資源彈性考量，靈活調整架構與環境變數設定。
 
-## 本地下載與 .env 檔案說明
+## 下載與 .env 檔案說明
 請於各自平台設定環境變數或本地建立 `.env.local`、`.env` 檔案。
-
 
 ### 下載前提
 - **N8N**
@@ -114,6 +111,8 @@
      ```
    - 後端（backend/.env）
      ```
+     #用於Alembic migration
+     ALEMBIC_DATABASE_URL=postgresql://postgres:[YOUR-PASSWORD]@db....supabase.co:5432/postgres
      #方案二 前後端獨立佈署
      DATABASE_URL=postgresql://... # Supabase 連線字串
      SECRET_KEY=your-secret # 可選
