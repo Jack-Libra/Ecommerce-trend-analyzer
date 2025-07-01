@@ -29,20 +29,54 @@
 - **Supabase**：雲端 PostgreSQL 資料庫服務，儲存商品、關鍵字、快照等資料。
 - **Render**：後端 API 雲端部署平台，支援自動化 CI/CD。
 
-## 部署與架構 (Vercel + Render)
-採用 Serverless 架構，前後端分離部署，確保高可用性與彈性擴展。
-- **Supabase**：雲端 PostgreSQL 資料庫，負責資料儲存與備份。
-- **Vercel**：前端（Next.js）自動化部署平台，支援 CI/CD、Preview、Production 多環境，並可自動讀取環境變數。
-- **N8N**：自動化流程服務，負責爬蟲排程、資料同步等任務，可用 Docker 部署。
-- **Render**：後端（FastAPI）自動化部署平台，支援 API Server、資料庫、定時任務等。
-- **Cloudflare**：DNS 解析與安全防護，提升網站存取速度與穩定性。
+## 部署與架構
 
-### 部署說明
-- 前端程式碼推送至 GitHub，Vercel 會自動 build 並部署，環境變數（如 `NEXT_PUBLIC_API_BASE_URL`）可於 Vercel 後台設定。
-- 後端（FastAPI）推送至 GitHub，Render 會自動 build 並啟動 API 服務，需設定 CORS 允許 Vercel 網域。
-> CORS可於 backend/main.py 設定。
-- Supabase 作為資料庫服務，與 FastAPI 連線。
-- N8N 可用於自動化爬蟲排程、API 觸發等。
+採用現代雲端分離式架構，支援「前後端一起佈署」與「前後端獨立佈署(分離)」兩種彈性部署模式，適用於開發、測試與正式營運等多元場景。
+
+### 架構總覽
+
+```
++-------------------+        +-------------------+        +-------------------+
+|   前端 (Next.js)  | <----> |   後端 (FastAPI)  | <----> |   資料庫 (Supabase)|
+|   (Vercel)        |        |   (Render/本地)   |        |   (PostgreSQL)    |
++-------------------+        +-------------------+        +-------------------+
+         |                           ^
+         |                           |
+         v                           |
++-------------------+                |
+| 自動化流程 (N8N)   |----------------+
+| (Docker/雲端)      |
++-------------------+
+```
+- **前端 (Next.js)**：負責 UI 呈現、API 請求、資料視覺化，部署於 Vercel 或本地。
+- **後端 (FastAPI)**：負責 RESTful API、商業邏輯、資料驗證，部署於 Render、雲端或本地。
+- **資料庫 (Supabase)**：雲端 PostgreSQL，儲存商品、快照、關鍵字等資料。
+- **自動化流程 (N8N)**：負責爬蟲排程、資料同步、API 觸發，可用 Docker 或雲端部署。
+
+### 部署方案比較
+
+#### 方案一：前後端一起佈署（單機/本地開發）
+- **說明**：前端與後端同時於本地或同一伺服器啟動，API 請求直接走本地端。
+- **適用情境**：開發測試、單機部署、快速驗證。
+- **優點**：設定簡單、無跨域問題、除錯方便。
+- **缺點**：不利於彈性擴展，正式環境不建議。
+- **注意**：API 路徑建議設為 `/api`，環境變數 `NEXT_PUBLIC_API_BASE_URL=/api`。
+
+#### 方案二：前後端獨立佈署（雲端/正式環境）
+- **說明**：前端（Next.js）獨立部署於 Vercel，後端（FastAPI）獨立部署於 Render 或其他雲端平台，API 請求走公開網址。
+- **適用情境**：正式營運、雲端部署、需獨立擴展前後端時。
+- **優點**：彈性擴展、可獨立升級維護、支援多環境。
+- **缺點**：需處理 CORS、環境變數、API 網域設定。
+- **注意**：API 路徑設為公開網址，`NEXT_PUBLIC_API_BASE_URL=https://your-api-url`，後端 CORS 需允許前端網域。
+
+### 部署細節與常見問題
+- **CORS 設定**：後端（FastAPI）需於 `main.py` 設定允許前端網域（如 Vercel domain）。
+- **環境變數**：前端於 `.env.local` 設定 `NEXT_PUBLIC_API_BASE_URL`、`NEXT_PUBLIC_SUPABASE_URL` 等，後端於 `.env` 設定 `DATABASE_URL`。
+- **API 路由**：前端所有 `/api/xxx` 路由皆直接查詢 Supabase 或後端 API，完全獨立於 FastAPI 內部路由。
+- **資料庫連線**：建議使用 Supabase 雲端服務，確保資料安全與備份。
+- **自動化流程**：N8N 可用於定時爬蟲、資料同步，建議用 Docker 部署於雲端或本地。
+
+> 選擇部署方案時，請依實際需求（開發/測試/正式營運）與資源彈性考量，靈活調整架構與環境變數設定。
 
 ## 本地下載與 .env 檔案說明
 請於各自平台設定環境變數或本地建立 `.env.local`、`.env` 檔案。
@@ -68,13 +102,21 @@
 3. 於各自資料夾建立對應的 .env 檔案：
    - 前端（frontend/.env.local）
      ```
-     NEXT_PUBLIC_API_BASE_URL=https://... .onrender.com # render api
-     # NEXT_PUBLIC_API_BASE_URL=http://localhost:8000 # 本地api
+      #方案一 前後端一起佈署
+      NEXT_PUBLIC_API_BASE_URL=/api #api路由
+      NEXT_PUBLIC_SUPABASE_URL=https://...supabase.co #Supabase 連線字串
+      SUPABASE_SERVICE_ROLE_KEY=your-service-role-key 
+      FASTAPI_BASE_URL=http://localhost:8000 # 本地api，佈署vercel時不用連
+
+      #方案二 前後端獨立佈署
+      #NEXT_PUBLIC_API_BASE_URL=https://ecommerce-trend-analyzer.onrender.com #後端render api
+      #NEXT_PUBLIC_API_BASE_URL=http://localhost:8000 # 本地api
      ```
    - 後端（backend/.env）
      ```
+     #方案二 前後端獨立佈署
      DATABASE_URL=postgresql://... # Supabase 連線字串
-     SECRET_KEY=your-secret 
+     SECRET_KEY=your-secret # 可選
      ```
 4. （可選）初始化資料庫結構（需先設定好 backend/.env）：
    ```bash
@@ -100,10 +142,8 @@
 - **信箱**：dafsf60804@gmail.com
 
 ### 實作網頁
-- **vercel**：(https://ecommerce-trend-analyzer.vercel.app/)
-> 等待3-4分鐘render回應
+- **vercel(方案一)**：(https://ecommerce-trend-analyzer.vercel.app/)
 - **爬取網頁**：(https://www.amazon.com/-/zh_TW/gp/bestsellers/electronics/ref=pd_zg_ts_electronics)
-
 ### 專案結構.txt幫你更快掌握專案
 ### 尚處於MVP階段
 
