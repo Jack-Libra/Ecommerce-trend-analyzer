@@ -4,11 +4,12 @@ import type { Product } from "@/types/product";
 export function mapProductForFrontend(item: Product): Product {
   return {
     ...item,
-    name: item.title,
-    platform: item.platform_id,
-    category: item.category_id,
+    name: item.name ?? item.title ?? "",
+    platform: item.platform ?? item.platform_id ?? "",
+    category: item.category ?? item.category_id ?? "",
     price: item.price ?? 0, // 直接取最新快照表的 price 欄位
     avgPrice: undefined, // 若有需要可再計算
+    score: item.score,
   };
 }
 

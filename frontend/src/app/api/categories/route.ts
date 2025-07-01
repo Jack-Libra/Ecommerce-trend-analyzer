@@ -1,8 +1,15 @@
+import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
 
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
+
 export async function GET() {
-  // TODO: 改為 fetch('https://your-fastapi-url/categories')
-  const res = await fetch(process.env.NEXT_PUBLIC_API_BASE_URL + '/categories');
-  const data = await res.json();
+  const { data, error } = await supabase.from('categories').select('*');
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
   return NextResponse.json(data);
 }

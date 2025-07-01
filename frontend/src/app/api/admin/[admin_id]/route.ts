@@ -6,10 +6,16 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-// 商品價格趨勢分析（折線圖）
-export async function GET(req: NextRequest, { params }: { params: { product_id: string } }) {
-  const { product_id } = params;
-  const { data, error } = await supabase.from('product_price_trends').select('*').eq('product_id', product_id);
+export async function GET(
+  req: NextRequest,
+  context: { params: { admin_id: string } }
+) {
+  const { admin_id } = context.params;
+  const { data, error } = await supabase
+    .from('admin')
+    .select('*')
+    .eq('id', admin_id)
+    .single();
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

@@ -1,32 +1,38 @@
+import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
 
-// 單一商品詳細
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
+
+// 查詢單一商品
 export async function GET(req: NextRequest, { params }: { params: { product_id: string } }) {
   const { product_id } = params;
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/products/${product_id}`);
-  const data = await res.json();
+  const { data, error } = await supabase.from('products').select('*').eq('id', product_id).single();
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
   return NextResponse.json(data);
 }
 
-// 商品更新
+// 更新商品
 export async function PUT(req: NextRequest, { params }: { params: { product_id: string } }) {
   const { product_id } = params;
   const body = await req.json();
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/products/${product_id}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  });
-  const data = await res.json();
+  const { data, error } = await supabase.from('products').update(body).eq('id', product_id).select().single();
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
   return NextResponse.json(data);
 }
 
-// 商品刪除
+// 刪除商品
 export async function DELETE(req: NextRequest, { params }: { params: { product_id: string } }) {
   const { product_id } = params;
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/products/${product_id}`, {
-    method: 'DELETE',
-  });
-  const data = await res.json();
-  return NextResponse.json(data);
+  const { error } = await supabase.from('products').delete().eq('id', product_id);
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+  return NextResponse.json({ success: true });
 }
