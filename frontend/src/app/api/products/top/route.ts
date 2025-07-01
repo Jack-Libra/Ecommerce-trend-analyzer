@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
+import type { Product } from '@/types/product';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -17,11 +18,11 @@ export async function GET() {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
   // 轉換格式，讓前端 mapProductForFrontend 能正確取得名稱
-  const mapped = data.map((item: any) => ({
+  const mapped = (data ?? []).map((item): Product => ({
     ...item,
-    title: item.products?.title,
-    platform_id: item.products?.platform_id,
-    category_id: item.products?.category_id,
+    title: item.products?.title ?? '',
+    platform_id: item.products?.platform_id ?? '',
+    category_id: item.products?.category_id ?? '',
   }));
   return NextResponse.json(mapped);
 }
