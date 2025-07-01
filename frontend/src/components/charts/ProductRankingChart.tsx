@@ -38,7 +38,6 @@ export default function ProductRankingChart({ data = [] }: { data?: ProductRanki
                     i--;
                   }
                   display = text.slice(0, i) + '...';
-                  const finalWidth = ctx.measureText(display).width; // eslint: width 改 const
                   return (
                     <text
                       x={0}
