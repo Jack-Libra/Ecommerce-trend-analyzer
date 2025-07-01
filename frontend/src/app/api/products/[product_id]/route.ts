@@ -7,8 +7,8 @@ const supabase = createClient(
 );
 
 // 查詢單一商品
-export async function GET(req: NextRequest, { params }: { params: { product_id: string } }) {
-  const { product_id } = params;
+export async function GET(req: NextRequest, context: { params: { product_id: string } }) {
+  const { product_id } = context.params;
   const { data, error } = await supabase.from('products').select('*').eq('id', product_id).single();
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -17,8 +17,8 @@ export async function GET(req: NextRequest, { params }: { params: { product_id: 
 }
 
 // 更新商品
-export async function PUT(req: NextRequest, { params }: { params: { product_id: string } }) {
-  const { product_id } = params;
+export async function PUT(req: NextRequest, context: { params: { product_id: string } }) {
+  const { product_id } = context.params;
   const body = await req.json();
   const { data, error } = await supabase.from('products').update(body).eq('id', product_id).select().single();
   if (error) {
@@ -28,8 +28,8 @@ export async function PUT(req: NextRequest, { params }: { params: { product_id: 
 }
 
 // 刪除商品
-export async function DELETE(req: NextRequest, { params }: { params: { product_id: string } }) {
-  const { product_id } = params;
+export async function DELETE(req: NextRequest, context: { params: { product_id: string } }) {
+  const { product_id } = context.params;
   const { error } = await supabase.from('products').delete().eq('id', product_id);
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

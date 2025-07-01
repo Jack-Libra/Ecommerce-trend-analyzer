@@ -6,8 +6,8 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-export async function GET(req: NextRequest, { params }: { params: { category_id: string } }) {
-  const { category_id } = params;
+export async function GET(req: NextRequest, context: { params: { category_id: string } }) {
+  const { category_id } = context.params;
   const { data, error } = await supabase.from('categories').select('*').eq('id', category_id).single();
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

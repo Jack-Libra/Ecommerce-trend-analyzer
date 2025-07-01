@@ -6,10 +6,7 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-export async function GET(
-  req: NextRequest,
-  context: { params: { admin_id: string } }
-) {
+export async function GET(req: NextRequest, context: { params: { admin_id: string } }) {
   const { admin_id } = context.params;
   const { data, error } = await supabase
     .from('admin')
