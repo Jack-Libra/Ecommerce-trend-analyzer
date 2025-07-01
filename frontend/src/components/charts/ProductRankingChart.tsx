@@ -33,14 +33,12 @@ export default function ProductRankingChart({ data = [] }: { data?: ProductRanki
                 if (ctx) {
                   ctx.font = '13px sans-serif';
                   let display = text;
-                  let width = ctx.measureText(display).width;
-                  if (width > maxWidth) {
-                    let i = text.length;
-                    while (i > 0 && ctx.measureText(text.slice(0, i) + '...').width > maxWidth) {
-                      i--;
-                    }
-                    display = text.slice(0, i) + '...';
+                  let i = text.length;
+                  while (i > 0 && ctx.measureText(text.slice(0, i) + '...').width > maxWidth) {
+                    i--;
                   }
+                  display = text.slice(0, i) + '...';
+                  const finalWidth = ctx.measureText(display).width; // eslint: width 改 const
                   return (
                     <text
                       x={0}
