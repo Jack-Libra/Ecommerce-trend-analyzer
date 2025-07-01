@@ -7,8 +7,8 @@ const supabase = createClient(
 );
 
 // 商品價格統計（最高、最低、平均）
-export async function GET(req: NextRequest, context: { params: { product_id: string } }) {
-  const { product_id } = context.params;
+export async function GET(req: NextRequest, { params }: { params: { product_id: string } }) {
+  const { product_id } = params;
   const { data, error } = await supabase.from('product_price_stats').select('*').eq('product_id', product_id).single();
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

@@ -7,8 +7,8 @@ const supabase = createClient(
 );
 
 // 商品價格快照（折線圖）
-export async function GET(req: NextRequest, context: { params: { product_id: string } }) {
-  const { product_id } = context.params;
+export async function GET(req: NextRequest, { params }: { params: { product_id: string } }) {
+  const { product_id } = params;
   const { data, error } = await supabase.from('product_trends').select('*').eq('product_id', product_id);
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
