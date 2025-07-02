@@ -3,24 +3,33 @@
 
 import { useState } from "react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, CartesianGrid, ReferenceDot } from "recharts";
-import { TooltipProps } from "recharts";
+
+// 定義 payload 物件型別，完全自訂
+interface CustomPayload {
+  dataKey: string;
+  value: number;
+  stroke?: string;
+  tooltipPosition?: { x: number; y: number };
+}
 
 export interface ReviewTrendPoint {
   date: string;
   [productName: string]: string | number;
 }
 
-function CustomTooltip({ active, payload, label, coordinate }: TooltipProps<any, string>) {
+function CustomTooltip({ active, payload, label, coordinate }: {
+  active?: boolean;
+  payload?: CustomPayload[];
+  label?: string;
+  coordinate?: { x: number; y?: number };
+}) {
   if (!active || !payload || payload.length === 0) return null;
-  // 找到與游標 y 座標最接近的 entry，若有多條線重疊則優先顯示最後一條（最上層）
   let entry = payload[0];
-  if (payload.length > 1 && coordinate) {
+  if (payload.length > 1 && coordinate && typeof coordinate.y === 'number') {
     let minDist = Infinity;
     payload.forEach((e) => {
-      // recharts Payload 沒有 tooltipPosition，這裡用 as any 兼容
-      const tooltipY = (e as any).tooltipPosition?.y;
-      if (typeof tooltipY === 'number' && typeof coordinate.y === 'number') {
-        const dist = Math.abs(tooltipY - coordinate.y);
+      if (typeof e.tooltipPosition?.y === 'number') {
+        const dist = Math.abs(e.tooltipPosition.y - coordinate.y!);
         if (dist < minDist || (dist === minDist && e.dataKey !== payload[0].dataKey)) {
           minDist = dist;
           entry = e;
