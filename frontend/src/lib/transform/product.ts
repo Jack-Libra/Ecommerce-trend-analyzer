@@ -1,4 +1,5 @@
-import type { Product } from "@/types/product";
+import type { Product, ProductSnapshot } from "@/types/product";
+import type { ReviewTrendPoint } from "@/components/charts/ProductReviewTrendChart";
 
 // 將 API 回傳的 Product 轉換成前端顯示用 Product 型別
 export function mapProductForFrontend(item: Product): Product {
@@ -39,5 +40,46 @@ export function getReviewTrendData(
     });
     return row;
   });
+  return { trend, trendProducts };
+}
+
+// 依 snapshots 與排行榜前N商品產生 ReviewTrendPoint[]
+export function getReviewTrendDataFromSnapshots(
+  products: Product[],
+  snapshots: ProductSnapshot[],
+  days: number = 7,
+  topN: number = 3
+): { trend: ReviewTrendPoint[]; trendProducts: string[] } {
+  const topProductIds = products.slice(0, topN).map((p) => p.id);
+  const productIdToName: Record<number, string> = {};
+  products.forEach((p) => {
+    if (typeof p.id === "number" && (p.name || p.title))
+      productIdToName[p.id] = p.name ?? p.title;
+  });
+  const filteredSnapshots = snapshots.filter((s) =>
+    s.product_id && topProductIds.includes(s.product_id)
+  );
+  const today = new Date();
+  const lastNDays = Array.from({ length: days }, (_, i) => {
+    const d = new Date(today);
+    d.setDate(today.getDate() - (days - 1 - i));
+    return d.toISOString().slice(0, 10);
+  });
+  const trend: ReviewTrendPoint[] = lastNDays.map((date) => {
+    const row: ReviewTrendPoint = { date };
+    topProductIds.forEach((pid) => {
+      const name = productIdToName[pid] || String(pid);
+      const snap = filteredSnapshots.find(
+        (s) =>
+          s.product_id === pid &&
+          (s.captured_at?.slice(0, 10) || "") === date
+      );
+      row[name] = snap?.review_count ?? 0;
+    });
+    return row;
+  });
+  const trendProducts = topProductIds.map(
+    (pid) => productIdToName[pid] || String(pid)
+  );
   return { trend, trendProducts };
 }

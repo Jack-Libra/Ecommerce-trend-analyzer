@@ -8,18 +8,17 @@ import React, { useEffect, useState } from "react";
 import ProductCard from "@/components/cards/ProductCard";
 import ProductRankingChart from "@/components/charts/ProductRankingChart";
 import ProductReviewTrendChart from "@/components/charts/ProductReviewTrendChart";
-import type { ReviewTrendPoint } from "@/components/charts/ProductReviewTrendChart";
 // 引入 fetchTopProducts 用於從後端 API 獲取熱門商品資料
 // 引入 mapProductForFrontend 用於將後端商品資料轉換為前端需要的格式
-// 引入 getReviewTrendData 用於計算過去 7 天熱門商品的評論數變化資料
 import { fetchTopProducts } from "@/lib/api/product";
-import { mapProductForFrontend, getReviewTrendData } from "@/lib/transform/product";
+import { mapProductForFrontend, getReviewTrendDataFromSnapshots } from "@/lib/transform/product";
 import { fetchSnapshots } from "@/lib/api/snapshots";
 
 
 // 引入 Product 和 ProductSnapshot 類型定義
 // 這些類型定義用於描述商品資料的結構，確保在使用商品資料時具有正確的類型檢查
 import type { Product, ProductSnapshot } from "@/types/product";
+import type { ReviewTrendPoint } from "@/components/charts/ProductReviewTrendChart";
 
 export default function HomePage() {
   // 使用 useState 定義 products 狀態，初始為空陣列，用於存儲從後端獲取的熱門商品資料
@@ -65,32 +64,8 @@ export default function HomePage() {
       .catch((err) => console.error("載入快照失敗", err));
   }, []);
 
-  // 熱度變化趨勢圖：根據排行榜前3名的商品 id 過濾 snapshots
-  const topProductIds = products.slice(0, 3).map((p) => p.id);
-  const productIdToName: Record<number, string> = {};
-  products.forEach((p) => {
-    if (typeof p.id === "number" && (p.name || p.title)) productIdToName[p.id] = p.name ?? p.title;
-  });
-  // 只取前3名商品的快照
-  const filteredSnapshots = snapshots.filter((s) => s.product_id && topProductIds.includes(s.product_id));
-  // 取過去7天日期
-  const today = new Date();
-  const last7Days = Array.from({ length: 7 }, (_, i) => {
-    const d = new Date(today);
-    d.setDate(today.getDate() - (6 - i));
-    return d.toISOString().slice(0, 10);
-  });
-  // 依日期與商品彙整 review_count
-  const reviewTrendData = last7Days.map((date) => {
-    const row: { date: string; [k: string]: number | string } = { date };
-    topProductIds.forEach((pid) => {
-      const name = productIdToName[pid] || String(pid);
-      const snap = filteredSnapshots.find((s) => s.product_id === pid && (s.captured_at?.slice(0, 10) || "") === date);
-      row[name] = snap?.review_count ?? 0;
-    });
-    return row;
-  });
-  const trendProductNames = topProductIds.map((pid) => productIdToName[pid] || String(pid));
+  // 產生趨勢圖資料（呼叫轉換函式）
+  const { trend: reviewTrendData, trendProducts: trendProductNames } = getReviewTrendDataFromSnapshots(products, snapshots, 7, 3);
 
   // 返回一個包含頁面內容的 JSX 結構
   // 包含一個標題、一個商品排行榜圖表、一個熱度變化趨勢圖和一個商品卡片列表

@@ -74,7 +74,7 @@ async def fastest_growing(db:Session = Depends(get_db)):
 # 例如：get_product(db: Session, product_id: int) -> ProductRead
 @router.get("/{product_id}", response_model=ProductRead)
 async def read_product(product_id: int, db: AsyncSession = Depends(get_db)):
-    product = await get_product(db, product_id)
+    product = await get_product(db, product_id) if hasattr(get_product, "__code__") and get_product.__code__.co_flags & 0x80 else get_product(db, product_id)
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
     return product
