@@ -3,12 +3,13 @@ from typing import Optional
 from datetime import datetime
 
 class SnapshotBase(BaseModel):
-    product_id: str
+    product_id: int
     price: Optional[float]
     rating: Optional[float]
     review_count: Optional[int]
     rank: Optional[int]
     created_at: Optional[datetime]
+    captured_at: Optional[datetime]
 
 class SnapshotCreate(SnapshotBase):
     pass

@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from routers import products, keywords, categories, admin
+from routers import products, keywords, categories, admin, snapshots
 
 from middleware.logging import LoggingMiddleware
 from middleware.auth import AuthMiddleware
@@ -41,6 +41,7 @@ app.include_router(products.router)
 app.include_router(keywords.router)
 app.include_router(categories.router)
 app.include_router(admin.router)
+app.include_router(snapshots.router)
 
 @app.get("/")
 def root():

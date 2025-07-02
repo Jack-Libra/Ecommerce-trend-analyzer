@@ -60,12 +60,14 @@
 - **適用情境**：開發測試、單機部署、快速驗證。
 - **優點**：設定簡單、無跨域問題、除錯方便。
 - **注意**：API 路徑建議設為 `/api`，環境變數 `NEXT_PUBLIC_API_BASE_URL=/api`。
+> router設於 `frontend/src/app/api`。
 
 #### 方案二：分離式部署（雲端/正式環境）
 - **說明**：前端（Next.js）獨立部署於 Vercel，後端（FastAPI）獨立部署於 Render 或其他雲端平台，API 請求走公開網址。
 - **適用情境**：正式營運、雲端部署、需獨立擴展前後端時。
 - **優點**：彈性擴展、可獨立升級維護、支援多環境。
 - **注意**：API 路徑設為公開網址，`NEXT_PUBLIC_API_BASE_URL=https://your-api-url`，後端 CORS 需允許前端網域。
+> router設於 `backend/routers`。
 
 ### 部署細節與常見問題
 - **CORS 設定**：可於 `backend/main.py` 設定允許前端網域（如 Vercel domain）。
