@@ -18,7 +18,6 @@ import { fetchSnapshots } from "@/lib/api/snapshots";
 // 引入 Product 和 ProductSnapshot 類型定義
 // 這些類型定義用於描述商品資料的結構，確保在使用商品資料時具有正確的類型檢查
 import type { Product, ProductSnapshot } from "@/types/product";
-import type { ReviewTrendPoint } from "@/components/charts/ProductReviewTrendChart";
 
 export default function HomePage() {
   // 使用 useState 定義 products 狀態，初始為空陣列，用於存儲從後端獲取的熱門商品資料

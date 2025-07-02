@@ -3,22 +3,24 @@
 
 import { useState } from "react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, CartesianGrid, ReferenceDot } from "recharts";
-
+import { TooltipProps } from "recharts";
 
 export interface ReviewTrendPoint {
   date: string;
   [productName: string]: string | number;
 }
 
-function CustomTooltip({ active, payload, label, coordinate }: any) {
+function CustomTooltip({ active, payload, label, coordinate }: TooltipProps<any, string>) {
   if (!active || !payload || payload.length === 0) return null;
   // 找到與游標 y 座標最接近的 entry，若有多條線重疊則優先顯示最後一條（最上層）
   let entry = payload[0];
   if (payload.length > 1 && coordinate) {
     let minDist = Infinity;
-    payload.forEach((e: any) => {
-      if (typeof e.tooltipPosition?.y === 'number') {
-        const dist = Math.abs(e.tooltipPosition.y - coordinate.y);
+    payload.forEach((e) => {
+      // recharts Payload 沒有 tooltipPosition，這裡用 as any 兼容
+      const tooltipY = (e as any).tooltipPosition?.y;
+      if (typeof tooltipY === 'number' && typeof coordinate.y === 'number') {
+        const dist = Math.abs(tooltipY - coordinate.y);
         if (dist < minDist || (dist === minDist && e.dataKey !== payload[0].dataKey)) {
           minDist = dist;
           entry = e;
@@ -38,7 +40,7 @@ function CustomTooltip({ active, payload, label, coordinate }: any) {
 
 export default function ProductReviewTrendChart({ data = [], products = [] }: { data?: ReviewTrendPoint[]; products: string[] }) {
   const [activeLine, setActiveLine] = useState<string | null>(null);
-  const handleLegendClick = (o: any) => {
+  const handleLegendClick = (o: { value: string }) => {
     setActiveLine((prev) => (prev === o.value ? null : o.value));
   };
   return (
