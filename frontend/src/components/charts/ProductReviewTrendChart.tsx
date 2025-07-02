@@ -12,14 +12,14 @@ export interface ReviewTrendPoint {
 
 function CustomTooltip({ active, payload, label, coordinate }: any) {
   if (!active || !payload || payload.length === 0) return null;
-  // 找到與游標 y 座標最接近的 entry
+  // 找到與游標 y 座標最接近的 entry，若有多條線重疊則優先顯示最後一條（最上層）
   let entry = payload[0];
   if (payload.length > 1 && coordinate) {
     let minDist = Infinity;
     payload.forEach((e: any) => {
       if (typeof e.tooltipPosition?.y === 'number') {
         const dist = Math.abs(e.tooltipPosition.y - coordinate.y);
-        if (dist < minDist) {
+        if (dist < minDist || (dist === minDist && e.dataKey !== payload[0].dataKey)) {
           minDist = dist;
           entry = e;
         }
