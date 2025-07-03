@@ -50,31 +50,35 @@ export function getReviewTrendDataFromSnapshots(
   days: number = 7,
   topN: number = 3
 ): { trend: ReviewTrendPoint[]; trendProducts: string[] } {
-  const topProductIds = products.slice(0, topN).map((p) => p.id);
+  // 確保 id 全為 number
+  const topProductIds = products.slice(0, topN).map((p) => Number(p.id));
   const productIdToName: Record<number, string> = {};
   products.forEach((p) => {
-    if (typeof p.id === "number" && (p.name || p.title))
-      productIdToName[p.id] = p.name ?? p.title;
+    if ((p.id !== undefined && p.id !== null) && (p.name || p.title))
+      productIdToName[Number(p.id)] = p.name ?? p.title;
   });
   const filteredSnapshots = snapshots.filter((s) =>
     s.product_id !== undefined && s.product_id !== null &&
-    typeof s.product_id === "number" &&
     topProductIds.includes(Number(s.product_id))
   );
   const today = new Date();
   const lastNDays = Array.from({ length: days }, (_, i) => {
     const d = new Date(today);
-    d.setDate(today.getDate() - (days - 1 - i));
-    return d.toISOString().slice(0, 10);
+    d.setUTCDate(d.getUTCDate() - (days - 1 - i));
+  return d.toISOString().slice(0, 10); // UTC 時間一致
   });
   const trend: ReviewTrendPoint[] = lastNDays.map((date) => {
     const row: ReviewTrendPoint = { date };
     topProductIds.forEach((pid) => {
       const name = productIdToName[pid] || String(pid);
       const snap = filteredSnapshots.find(
-        (s) =>
-          Number(s.product_id) === pid &&
-          (s.captured_at?.slice(0, 10) || "") === date
+        (s) => {
+          if (Number(s.product_id) !== pid) return false;
+          if (!s.captured_at) return false;
+          // 直接用 slice(0, 10) 比對，避免時區誤差
+          const snapDateStr = s.captured_at.slice(0, 10);
+          return snapDateStr === date;
+        }
       );
       row[name] = snap?.review_count ?? 0;
     });
@@ -83,5 +87,27 @@ export function getReviewTrendDataFromSnapshots(
   const trendProducts = topProductIds.map(
     (pid) => productIdToName[pid] || String(pid)
   );
+  // 新增 log 方便前端檢查
+  // eslint-disable-next-line no-console
+  console.log("[ReviewTrend] trend", trend);
+  // eslint-disable-next-line no-console
+  console.log("[ReviewTrend] trendProducts", trendProducts);
+  // eslint-disable-next-line no-console
+  console.log("[ReviewTrend] filteredSnapshots", filteredSnapshots);
+  // eslint-disable-next-line no-console
+  console.log("[ReviewTrend] all snapshots", snapshots);
+  // eslint-disable-next-line no-console
+  console.log("[ReviewTrend] topProductIds", topProductIds);
+  // eslint-disable-next-line no-console
+  console.log("[ReviewTrend] productIdToName", productIdToName);
+  // eslint-disable-next-line no-console
+  console.log("[ReviewTrend] lastNDays", lastNDays);
+  // eslint-disable-next-line no-console
+  if (filteredSnapshots.length > 0) {
+    filteredSnapshots.forEach(s => {
+      console.log("[ReviewTrend] filtered captured_at", s.captured_at, s.product_id, s.review_count);
+    });
+  }
   return { trend, trendProducts };
+  
 }

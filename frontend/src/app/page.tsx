@@ -55,16 +55,32 @@ export default function HomePage() {
     score: p.score ?? 0, // 直接用後端回傳的 score
   }));
 
-  // 熱度變化趨勢圖資料（直接抓 snapshots API，支援分離式部署）
+  // 熱度變化趨勢圖資料（查排行榜前3名商品快照並合併）
   const [snapshots, setSnapshots] = useState<ProductSnapshot[]>([]);
   useEffect(() => {
-    fetchSnapshots()
-      .then(setSnapshots)
-      .catch((err) => console.error("載入快照失敗", err));
-  }, []);
+    async function fetchAllSnapshots() {
+      if (products.length === 0) return;
+      const topN = 3;
+      // 強制依 score 排序後再取前 N 名
+      const sorted = [...products].sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
+      const topProductIds = sorted.slice(0, topN).map((p) => Number(p.id));
+      const allSnapshots: ProductSnapshot[] = [];
+      for (const id of topProductIds) {
+        try {
+          const snaps = await fetchSnapshots({ product_id: id });
+          allSnapshots.push(...snaps);
+        } catch (err) {
+          console.error(`載入商品 ${id} 快照失敗`, err);
+        }
+      }
+      setSnapshots(allSnapshots);
+    }
+    fetchAllSnapshots();
+  }, [products]);
 
   // 產生趨勢圖資料（呼叫轉換函式）
-  const { trend: reviewTrendData, trendProducts: trendProductNames } = getReviewTrendDataFromSnapshots(products, snapshots, 7, 3);
+  const sortedProducts = [...products].sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
+  const { trend: reviewTrendData, trendProducts: trendProductNames } = getReviewTrendDataFromSnapshots(sortedProducts, snapshots, 7, 3);
 
   // 返回一個包含頁面內容的 JSX 結構
   // 包含一個標題、一個商品排行榜圖表、一個熱度變化趨勢圖和一個商品卡片列表

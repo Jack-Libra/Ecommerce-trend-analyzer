@@ -19,10 +19,15 @@ export async function GET() {
   }
   // 轉換格式，讓前端 mapProductForFrontend 能正確取得名稱
   const mapped = (data ?? []).map((item): Product => ({
-    ...item,
+    id: item.product_id, // 以 product_id 作為商品 id
     title: item.products?.title ?? '',
     platform_id: item.products?.platform_id ?? '',
     category_id: item.products?.category_id ?? '',
+    url: item.url ?? null,
+    image_url: item.image_url ?? null,
+    price: item.price ?? 0,
+    score: item.score ?? 0,
+    // 其餘欄位可依需要補上
   }));
   return NextResponse.json(mapped);
 }
