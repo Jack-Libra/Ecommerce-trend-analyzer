@@ -105,7 +105,6 @@
       NEXT_PUBLIC_API_BASE_URL=/api #api路由
       NEXT_PUBLIC_SUPABASE_URL=https://...supabase.co #Supabase 連線字串
       SUPABASE_SERVICE_ROLE_KEY=your-service-role-key 
-      FASTAPI_BASE_URL=http://localhost:8000 # 本地api，佈署vercel時不用連
 
       #方案二 分離式部署
       #NEXT_PUBLIC_API_BASE_URL=https://ecommerce-trend-analyzer.onrender.com #後端render api

@@ -12,7 +12,7 @@ import ProductReviewTrendChart from "@/components/charts/ProductReviewTrendChart
 // 引入 mapProductForFrontend 用於將後端商品資料轉換為前端需要的格式
 import { fetchTopProducts } from "@/lib/api/product";
 import { mapProductForFrontend, getReviewTrendDataFromSnapshots } from "@/lib/transform/product";
-import { fetchSnapshots } from "@/lib/api/snapshots";
+import { fetchSnapshots } from "@/lib/api/snapshots"
 
 
 // 引入 Product 和 ProductSnapshot 類型定義

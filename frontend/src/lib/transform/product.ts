@@ -57,7 +57,9 @@ export function getReviewTrendDataFromSnapshots(
       productIdToName[p.id] = p.name ?? p.title;
   });
   const filteredSnapshots = snapshots.filter((s) =>
-    s.product_id && topProductIds.includes(s.product_id)
+    s.product_id !== undefined && s.product_id !== null &&
+    typeof s.product_id === "number" &&
+    topProductIds.includes(Number(s.product_id))
   );
   const today = new Date();
   const lastNDays = Array.from({ length: days }, (_, i) => {
@@ -71,7 +73,7 @@ export function getReviewTrendDataFromSnapshots(
       const name = productIdToName[pid] || String(pid);
       const snap = filteredSnapshots.find(
         (s) =>
-          s.product_id === pid &&
+          Number(s.product_id) === pid &&
           (s.captured_at?.slice(0, 10) || "") === date
       );
       row[name] = snap?.review_count ?? 0;
