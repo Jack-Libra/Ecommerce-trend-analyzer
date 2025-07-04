@@ -11,7 +11,7 @@ const ProductCard: React.FC<Product> = ({ name, price, platform, image_url }) =>
         alt={name || "商品圖片"}
         width={400}
         height={400}
-        className="h-32 object-cover mt-2 rounded"
+        className="relative w-full h-50 overflow-hidden object-cover mt-2 rounded"
         unoptimized
       />
       <h3 className="font-semibold text-lg mb-1">{name}</h3>

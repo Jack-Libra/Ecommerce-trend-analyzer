@@ -37,7 +37,7 @@ const Header: React.FC = () => {
   }, []);
 
   return (
-    <header className="fixed w-full h-20 ">
+    <header className="fixed w-full h-20 z-50">
       <div className="flex flex-col relative">
           {/* Sidebar Toggle Button */}
           <button
