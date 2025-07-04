@@ -8,5 +8,10 @@ const nextConfig: NextConfig = {
     'http://172.29.224.1:3000',
   ],
 };
+module.exports = {
+  images: {
+    domains: ['images-na.ssl-images-amazon.com'], // ✅ 或 amazon.com 相關域名
+  },
+};
 
 export default nextConfig;

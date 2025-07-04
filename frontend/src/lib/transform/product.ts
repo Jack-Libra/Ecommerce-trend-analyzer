@@ -9,8 +9,16 @@ export function mapProductForFrontend(item: Product): Product {
     platform: item.platform ?? item.platform_id ?? "",
     category: item.category ?? item.category_id ?? "",
     price: item.price ?? 0, // 直接取最新快照表的 price 欄位
-    avgPrice: undefined, // 若有需要可再計算
+    avgPrice: item.avgPrice, // 若有提供則保留
     score: item.score,
+    url: item.url,
+    image_url: item.image_url,
+    id: item.id, // 明確保留 id
+    title: item.title, // 明確保留 title
+    platform_id: item.platform_id, // 明確保留 platform_id
+    category_id: item.category_id, // 明確保留 category_id
+    // 其餘欄位保留
+    snapshots: item.snapshots,
   };
 }
 
@@ -87,9 +95,9 @@ export function getReviewTrendDataFromSnapshots(
   const trendProducts = topProductIds.map(
     (pid) => productIdToName[pid] || String(pid)
   );
-  // 新增 log 方便前端檢查
+  // 除錯用 檢查 trend 與 trendProducts 是否正確
   // eslint-disable-next-line no-console
-  console.log("[ReviewTrend] trend", trend);
+/*   console.log("[ReviewTrend] trend", trend);
   // eslint-disable-next-line no-console
   console.log("[ReviewTrend] trendProducts", trendProducts);
   // eslint-disable-next-line no-console
@@ -107,7 +115,7 @@ export function getReviewTrendDataFromSnapshots(
     filteredSnapshots.forEach(s => {
       console.log("[ReviewTrend] filtered captured_at", s.captured_at, s.product_id, s.review_count);
     });
-  }
-  return { trend, trendProducts };
-  
+  } */
+  return { trend, trendProducts }; 
 }
+

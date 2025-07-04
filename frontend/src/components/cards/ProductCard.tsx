@@ -1,16 +1,25 @@
 // components/ProductCard.tsx
 import React from "react";
 import type { Product } from "@/types/product";
+import Image from 'next/image';
 
-const ProductCard: React.FC<Product> = ({ name, price, platform, avgPrice }) => {
+const ProductCard: React.FC<Product> = ({ name, price, platform, image_url }) => {
   return (
     <div className="border p-4 rounded-xl shadow bg-white">
+      <Image
+        src={image_url || "/placeholder.png"}
+        alt={name || "商品圖片"}
+        width={400}
+        height={400}
+        className="h-32 object-cover mt-2 rounded"
+        unoptimized
+      />
       <h3 className="font-semibold text-lg mb-1">{name}</h3>
       <p className="text-sm text-gray-600">平台：{platform}</p>
       <p className="text-blue-600 font-bold text-lg mt-1">${price}</p>
-      {avgPrice !== undefined && (
-        <p className="text-xs text-gray-400">平均價格：${avgPrice.toFixed(2)}</p>
-      )}
+
+      {/* 如果有平均價格，可以顯示 */}
+      {/* {avgPrice && <p className="text-sm text-gray-500">平均價格：${avgPrice}</p>} */}
     </div>
   );
 };

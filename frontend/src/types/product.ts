@@ -1,3 +1,5 @@
+import { StaticImport } from "next/dist/shared/lib/get-img-props";
+
 // types/product.ts
 export interface Product {
   id: number;
@@ -5,7 +7,7 @@ export interface Product {
   platform_id: string;
   category_id: string;
   url?: string;
-  image_url?: string;
+  image_url?: string | StaticImport; // 支援 string 及 StaticImport
   snapshots?: ProductSnapshot[]; // 新增快照欄位
   // 前端顯示用
   name?: string;
