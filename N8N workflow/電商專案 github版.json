@@ -1,0 +1,708 @@
+{
+  "name": "電商專案 github版",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -2360,
+        200
+      ],
+      "id": "c46315ea-228e-42db-a483-fe2e18cf719b",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "amount": 10
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -1600,
+        200
+      ],
+      "id": "ab945c8c-86ec-4f40-927f-c2feca226112",
+      "name": "Wait2",
+      "webhookId": "c1044569-31c3-44d7-997d-b9cca5669d01"
+    },
+    {
+      "parameters": {
+        "url": "=http://crawl4ai:11235/task/{{ $json.task_id }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1380,
+        125
+      ],
+      "id": "6a6f4a15-a60f-45ba-a91a-89eaf2247cb3",
+      "name": "crawl get",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "OtsQCvEUklunxK4c",
+          "name": "Crawl4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "Rate, review, Name, AsinList, Rank, Price, image_url",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -500,
+        200
+      ],
+      "id": "cebe5b8c-3368-4e7b-9fa7-37afaf4e1dc5",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -280,
+        200
+      ],
+      "id": "fca50230-3f8e-48cd-9516-277914d59f1e",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "8f544f45-9d2e-4a53-b3b5-d1b35cbdfb7a",
+              "leftValue": "={{ $json.body }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        300,
+        200
+      ],
+      "id": "16a94255-a551-49d5-a805-8e06e30c902c",
+      "name": "If"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        -80
+      ],
+      "id": "f101f069-477c-4fa5-978f-4c5f508e56b8",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "amount": 2
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1040,
+        340
+      ],
+      "id": "72128050-29e4-41eb-b549-704ec4716a85",
+      "name": "Wait",
+      "webhookId": "8e0108d9-3832-44a3-931f-239f59709b79"
+    },
+    {
+      "parameters": {
+        "content": "# 1.請求任務 crawl post\n\n## (1)  URL設定會因N8N配置而有所不同\n### Docker Compose(專案default) http://crawl4ai:11235/crawl\n### n8n、crawl4ai 跑本機 http://localhost:11235/crawl\n### n8n、crawl4ai 跑本機docker容器 http://host.docker.internal:11235/crawl\n### 雲端主機 https://your-domain.com/crawl\n\n## (2) credential\n### Bearer CRAWL4AI_API_TOKEN\n### CRAWL4AI_API_TOKEN 於 docker-compose設定，default:0000\n\n## (3) 爬蟲 URL\n### 開啟欲爬取網頁devtools以重新設定該網頁css\n**示範網頁:https://www.amazon.com/-/zh_TW/gp/bestsellers/electronics/ref=pd_zg_ts_electronics** \n**可透過sitemap獲得大量欲爬取網頁** \n\n## (4) crawl4ai\n### 任務成功時，返回taskID\n### 其餘設定參見craw4ai文檔\n\n## (5) if 一次爬取多個網站\n### 應於節點前新增loop，一個taskID請求一個URL，以免被反爬\n \n ",
+        "height": 780,
+        "width": 720,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -2140,
+        -600
+      ],
+      "typeVersion": 1,
+      "id": "324f0713-4830-4bdf-9fe8-c407ac245e8b",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://crawl4ai:11235/crawl",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"urls\": [\"https://www.amazon.com/-/zh_TW/gp/bestsellers/electronics/ref=pd_zg_ts_electronics\"],  \n\n\"crawler_params\": {\n  \"headless\": true,\n  \"wait_before_extract\": 3000},\n  \"extraction_config\": {\n    \"type\": \"json_css\",\n    \"params\": {\n      \"schema\": {\n        \"name\": \"character\",\n        \"baseSelector\": \"div.p13n-desktop-grid\",\n        \"fields\": [\n              {\n                \"name\": \"Name\",\n                \"selector\": \"._cDEzb_p13n-sc-css-line-clamp-3_g3dy1\",\n                \"type\": \"list\",\n                \"fields\":[{\"name\": \"Name\",\"type\": \"text\"}]\n               },\n              {\n                \"name\": \"AsinList\",\n                \"selector\": \"._cDEzb_iveVideoWrapper_JJ34T\",\n                \"type\": \"list\",\n                \"fields\":[{\"name\": \"asin\",\n      \"type\": \"attribute\",\n      \"attribute\": \"data-asin\"}]\n               },\n              {\n                \"name\": \"Rank\",\n                \"selector\": \"span.zg-bdg-text\",\n                \"type\": \"list\",\n                \"fields\":[{\"name\": \"Name\",\"type\": \"text\"}]\n               },\n              {\n                \"name\": \"Rate\",\n                \"selector\": \".a-icon-row\",\n                \"type\": \"list\",\n                \"fields\":[{\"name\": \"Name\",\"type\": \"text\"}]\n               },\n              {\n                \"name\": \"Price\",\n                \"selector\": \"span.p13n-sc-price, span._cDEzb_p13n-sc-price_3mJ9Z\",\n                \"type\": \"list\",\n                \"fields\":[{\"name\": \"Name\",\"type\": \"text\"}]\n               }\n                    ]\n      },\n      \"verbose\": true\n    }\n  },\n  \"cache_mode\": \"bypass\",\n  \"semphore_count\": 1,\n\n\"delay_between_requests\": 3000  \n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1820,
+        200
+      ],
+      "id": "2fe45636-5a72-43f9-bc9c-e3359691cac6",
+      "name": "crawl post amazon暢銷商品",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "OtsQCvEUklunxK4c",
+          "name": "Crawl4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# 2.依據 taskID 取得資料 crawl get\n\n\n## (1) URL設定對應 crawl post\n### Docker Compose(專案default) http://crawl4ai:11235/task/taskID\n### n8n、crawl4ai 跑本機 http://localhost:11235/task/taskID\n### n8n、crawl4ai 跑本機docker容器 http://host.docker.internal:11235/task/taskID\n### 雲端主機 https://your-domain.com/task/taskID\n\n## (2) 於extracted_content查看css有無爬取成功\n### null 或 [] 表示於crawl post節點中，css設定有誤\n\n\n## (3) loop\n### 等待節點:等crawl4ai處理任務，再請求任務結果，應避免一次性大量請求，以免被反爬\n### if 節點:判斷是否爬取成功\n \n\n ",
+        "height": 500,
+        "width": 700,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1540,
+        400
+      ],
+      "typeVersion": 1,
+      "id": "1763825e-2c98-4c45-806a-7f975ce6af90",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"task_id\": \"{{ $('crawl post amazon暢銷商品').item.json.task_id }}\",\n  \"status\": \"{{ $json.status }}\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1160,
+        125
+      ],
+      "id": "a168c5dc-8b8e-4340-a9fe-2ae492a30d3e",
+      "name": "擷取任務狀態"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f07a7b5c-71e5-4aca-adce-e01b0d6c7fde",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "=pending",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            },
+            {
+              "id": "7f622642-d24c-47de-b4be-93ce15948db3",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "=processing",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -940,
+        200
+      ],
+      "id": "a3d0cd59-582c-499d-8899-a530669dd65b",
+      "name": "判斷任務成功與否"
+    },
+    {
+      "parameters": {
+        "content": "# 3.資料清洗\n\n \n\n ",
+        "height": 80,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -680,
+        120
+      ],
+      "typeVersion": 1,
+      "id": "29c66186-72e6-4f1c-8ab8-ba5213b0d49c",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "jsCode": "const now = new Date();\nconst year = now.getFullYear();\nconst month = String(now.getMonth() + 1).padStart(2, '0');\nconst day = String(now.getDate()).padStart(2, '0');\nconst hour = String(now.getHours()).padStart(2, '0');\nconst minute = String(now.getMinutes()).padStart(2, '0');\nconst formattedTime = `${year}/${month}/${day} ${hour}:${minute}`;\n\nconst allResults = $('crawl get').last().json.results.flatMap(item => {\n  const parsed = JSON.parse(item.extracted_content);\n\n  const cleanValue = val => {\n    if (typeof val === 'string') {\n      return val.split(/[0-9]/)[0];\n    }\n    return val;\n  };\n\n  const cleanPriceList = arr => {\n    return arr.map(p => {\n      const numeric = typeof p.Name === 'string' ? p.Name.replace(/[^\\d.]/g, '') : null;\n      return { Name: numeric || null };\n    });\n  };\n\n  const cleanRankList = arr => {\n    return arr.map(r => {\n      const numeric = typeof r.Name === 'string' ? r.Name.replace(/[^\\d]/g, '') : null;\n      return { Name: numeric || null };\n    });\n  };\n\nreturn parsed.map(obj => {\n  const cleaned = {};\n\n  // 🖼️ 擷取多張圖片網址為 list\n  const imageList = Array.isArray(item.media?.images)\n    ? item.media.images.map(img => ({ Name: img.src }))\n    : [];\n  cleaned[\"image_url\"] = imageList;\n\n    // ⭐ Rate 與 review 拆解與清洗\n    if (obj.Rate && Array.isArray(obj.Rate)) {\n      cleaned[\"Rate\"] = [];\n      cleaned[\"review\"] = [];\n      obj.Rate.forEach(rateObj => {\n        if (rateObj.Name) {\n          const match = rateObj.Name.match(/^([\\d.]+)\\s*顆星，最高\\s*5\\s*顆星(?:([0-9,]+))?/);\n          if (match) {\n            cleaned[\"Rate\"].push({ Name: match[1] }); // e.g., \"4.4\"\n            cleaned[\"review\"].push({ Name: match[2]?.replace(/,/g, '') || null });\n          } else {\n            cleaned[\"Rate\"].push({ Name: null });\n            cleaned[\"review\"].push({ Name: null });\n          }\n        }\n      });\n    }\n\n    // 🧼 其他欄位清洗\n    for (const key in obj) {\n      if (['Rate', 'accords', 'Note', 'Notes'].includes(key)) continue;\n\n      if (key === 'Price' && Array.isArray(obj[key])) {\n        cleaned[key] = cleanPriceList(obj[key]);\n      } else if (key === 'Rank' && Array.isArray(obj[key])) {\n        cleaned[key] = cleanRankList(obj[key]);\n      } else {\n        cleaned[key] = cleanValue(obj[key]);\n      }\n    }\n\n    // 🕒 加入爬取時間欄位\n    cleaned[\"crawled_at\"] = [formattedTime];\n\n    return cleaned;\n  });\n});\n\nreturn allResults.map(product => ({ json: product }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -720,
+        200
+      ],
+      "id": "777d3c84-701b-4a72-8b6f-3e8c3ea06aec",
+      "name": "資料清洗"
+    },
+    {
+      "parameters": {
+        "content": "# 4.比對商品ID避免重複錄進商品資料\n\n## (1) http request節點:請求查看products表是否有重複ID\n### URL:https://<your-project-id>.supabase.co/rest/v1/products?product_code=eq.productID\n\n## (2) credentials:\n### apikey : your-anon-key\n### Authorization : Bearer your-anon-key\n\n \n\n ",
+        "height": 300,
+        "width": 720,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -240,
+        540
+      ],
+      "typeVersion": 1,
+      "id": "dc890181-89fe-4b15-bd1b-28d1a2e3b2b3",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "url": "=https://<your-project-id>.supabase.co/rest/v1/products?product_code=eq.{{ $json.AsinList.asin }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -60,
+        200
+      ],
+      "id": "4cb3a7e3-441d-4b85-a82d-4b4908befb14",
+      "name": "取得supabase 資料",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "8T9qShUOVtWqioo9",
+          "name": "supabase ecom"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# 5.根據結果\n\n## if 沒有ID(true)\n### 先進products表登錄商品資訊，再進快照表\n\n## if 有ID(fause)\n### 進 快照表\n\n \n\n ",
+        "height": 280,
+        "width": 340,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        200,
+        -100
+      ],
+      "typeVersion": 1,
+      "id": "eb9bd8a4-a0f9-4f99-849b-921e3f41b32e",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "# 6.supabase credentials\n \n## Host : NEXT_PUBLIC_SUPABASE_URL(https://your_account.supabase.co)\n\n## Service Role Secret : Bearer service_role API keys\n\n\n \n\n ",
+        "height": 200,
+        "width": 880,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        620,
+        -80
+      ],
+      "typeVersion": 1,
+      "id": "5903c929-3479-44a6-bac4-0d544f22233c",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "tableId": "products",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "product_code",
+              "fieldValue": "={{ $('Loop Over Items1').item.json.AsinList.asin }}"
+            },
+            {
+              "fieldId": "platform_id",
+              "fieldValue": "=amazon"
+            },
+            {
+              "fieldId": "title",
+              "fieldValue": "={{ $('Loop Over Items1').item.json.Name.Name }}"
+            },
+            {
+              "fieldId": "category_id",
+              "fieldValue": "=001"
+            },
+            {
+              "fieldId": "image_url",
+              "fieldValue": "={{ $('Loop Over Items1').item.json.image_url.Name }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        680,
+        140
+      ],
+      "id": "ec5d3516-c881-4841-93d7-e240d9dbf771",
+      "name": "存進products表",
+      "credentials": {
+        "supabaseApi": {
+          "id": "bQ4pNwjelbmPeoYg",
+          "name": "ecom-trends-db"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "useCustomSchema": true,
+        "tableId": "product_snapshots",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "product_id",
+              "fieldValue": "={{ $json.id }}"
+            },
+            {
+              "fieldId": "rating",
+              "fieldValue": "={{ $('Loop Over Items1').item.json.Rate.Name }}"
+            },
+            {
+              "fieldId": "rank",
+              "fieldValue": "={{ $('Loop Over Items1').item.json.Rank.Name }}"
+            },
+            {
+              "fieldId": "captured_at",
+              "fieldValue": "={{ $('資料清洗').item.json.crawled_at[0] }}"
+            },
+            {
+              "fieldId": "price",
+              "fieldValue": "={{ $('Loop Over Items1').item.json.Price.Name }}"
+            },
+            {
+              "fieldId": "review_count",
+              "fieldValue": "={{ $('Loop Over Items1').item.json.review.Name }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        860,
+        140
+      ],
+      "id": "67bc7c50-3c63-4a1c-9d77-79b19dffb136",
+      "name": "進快照表",
+      "credentials": {
+        "supabaseApi": {
+          "id": "bQ4pNwjelbmPeoYg",
+          "name": "ecom-trends-db"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "useCustomSchema": true,
+        "tableId": "product_snapshots",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "product_id",
+              "fieldValue": "={{ $json.body[0].id }}"
+            },
+            {
+              "fieldId": "rating",
+              "fieldValue": "={{ $('Loop Over Items1').item.json.Rate.Name }}"
+            },
+            {
+              "fieldId": "rank",
+              "fieldValue": "={{ $('Loop Over Items1').item.json.Rank.Name }}"
+            },
+            {
+              "fieldId": "captured_at",
+              "fieldValue": "={{ $('資料清洗').item.json.crawled_at[0] }}"
+            },
+            {
+              "fieldId": "price",
+              "fieldValue": "={{ $('Loop Over Items1').item.json.Price.Name }}"
+            },
+            {
+              "fieldId": "review_count",
+              "fieldValue": "={{ $('Loop Over Items1').item.json.review.Name }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        760,
+        300
+      ],
+      "id": "8e8a3e5e-3c66-4b2d-ba16-91f1c76fe07a",
+      "name": "進快照表1",
+      "credentials": {
+        "supabaseApi": {
+          "id": "bQ4pNwjelbmPeoYg",
+          "name": "ecom-trends-db"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "crawl post amazon暢銷商品",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait2": {
+      "main": [
+        [
+          {
+            "node": "crawl get",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "crawl get": {
+      "main": [
+        [
+          {
+            "node": "擷取任務狀態",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "取得supabase 資料",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "存進products表",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "進快照表1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "crawl post amazon暢銷商品": {
+      "main": [
+        [
+          {
+            "node": "Wait2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "擷取任務狀態": {
+      "main": [
+        [
+          {
+            "node": "判斷任務成功與否",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "判斷任務成功與否": {
+      "main": [
+        [
+          {
+            "node": "資料清洗",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "資料清洗": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "取得supabase 資料": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "存進products表": {
+      "main": [
+        [
+          {
+            "node": "進快照表",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "進快照表": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "進快照表1": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "8b184b97-101a-4823-95b3-622c434633b5",
+  "meta": {
+    "instanceId": "f4c6da52a11a4b9ce6970aa105abd4666a1709f49194afa5baf2ca88033379a8"
+  },
+  "id": "Wc4o8G7F5jERfTyG",
+  "tags": []
+}
