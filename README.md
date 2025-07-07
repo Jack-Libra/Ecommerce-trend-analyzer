@@ -82,9 +82,10 @@
 請於各自平台設定環境變數或本地建立 `.env.local`、`.env` 檔案。
 
 ### 下載前提
-- **N8N**
-- **Crawl4ai**
-- **Docker(可選)**
+- **開發環境**：linux/Ubuntu
+- **Docker**:於Ubuntu新建 `docker-compose.yml`和`.env`，內含 **n8n**、**crawl4ai** 服務
+> 此`.env`內容位於`docker-compose.yml`中註解中，注意`docker-compose.yml`和`.env`不應放於專案內。
+> `docker-compose`和`.env`應於Ubuntu同一地方，如:/home/你的使用者名稱/dev-tools。
 ### 本地下載專案步驟
 1. 下載專案：
    ```bash
@@ -137,7 +138,8 @@
 ## 其他
 ### 授權
 - **MIT License**:歡迎二次開發與商業應用
-
+### 開發環境
+- **linux/Ubuntu**
 ### 聯絡方式
 - **信箱**：dafsf60804@gmail.com
 

@@ -1,0 +1,34 @@
+ersion: '3.8'
+
+services:
+  n8n:
+    image: n8nio/n8n
+    container_name: n8n
+    ports:
+      - "5678:5678"
+    volumes:
+      - ./n8n-data:/home/node/.n8n
+    environment:
+      - TZ=Asia/Taipei
+    restart: unless-stopped
+
+  crawl4ai:
+    image: unclecode/crawl4ai:basic-amd64
+    container_name: crawl4ai
+    ports:
+      - "11235:11235"
+    environment:
+      - CRAWL4AI_API_TOKEN=${CRAWL4AI_API_TOKEN}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - MAX_CONCURRENT_TASKS=2
+
+# .env
+# This file should be placed in the same directory as docker-compose.yml
+# It contains environment variables for the services defined in docker-compose.yml
+# Make sure to replace the values with your actual API keys and tokens.
+# Note: Do not commit this file to version control if it contains sensitive information. 
+
+#CRAWL4AI_API_TOKEN=0000
+#GEMINI_API_KEY=
+#OPENAI_API_KEY=
