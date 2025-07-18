@@ -146,6 +146,7 @@
 ### 實作網頁
 - **vercel(方案一)**：(https://ecommerce-trend-analyzer.vercel.app/)
 - **爬取網頁**：(https://www.amazon.com/-/zh_TW/gp/bestsellers/electronics/ref=pd_zg_ts_electronics)
+- **了解更多**：(https://medium.com/@dafsf60804/如何用-n8n-crawl4ai-打造自動化電商分析平台-含完整架構與實作心得-af7267c5930d)
 ### 專案結構.txt幫你更快掌握專案
 ### 尚處於MVP階段
 
