@@ -1,106 +1,170 @@
 ecommerce-trend-analyzer/
 ├── frontend/                      # 前端應用（Next.js）
 │   ├── src/
-│   │   ├── app/
-│   │   │   ├── layout.tsx            # 全域 layout（含 sidebar、header）
-│   │   │   ├── page.tsx              # 首頁：熱門商品排行榜
-│   │   │   ├── product/[id]/         # 單一商品分析頁
-│   │   │   ├── keywords/             # 熱門關鍵字分析頁
-│   │   │   ├── categories/           # 類別分析頁
-│   │   │   └── admin/                # 後台管理頁
-│   │   ├── components/                    # 共用元件
-│   │   │   ├── Sidebar.tsx
-│   │   │   ├── Header.tsx
-│   │   │   ├── ProductRankingChart.tsx     # 長條圖（熱門商品排行榜),首頁
-│   │   │   ├── ProductReviewTrendChart.tsx # 折線圖(熱度變化趨勢),首頁
-│   │   │   ├── ProductCard.tsx             # 首頁與類別分析頁
-│   │   │   ├── TrendChart.tsx              # 折線圖（單商品價格趨勢）,單一商品分析頁
-│   │   │   ├── KeywordChart.tsx            # 柱狀圖（熱門關鍵字）,熱門關鍵字分析頁
-│   │   │   ├── CategoryBarChart.tsx        # 堆疊長條圖(分類商品成長趨勢),類別分析頁
-│   │   │   ├── ProductOutlierChart.tsx     # 折線圖 + 異常點(商品異常價格波動),單一商品分析頁
-│   │   │   ├── KeywordHeatMap.tsx          # 熱力圖或雷達圖(熱門關鍵字熱力圖),熱門關鍵字分析頁
-│   │   │   └── PriceBox.tsx                # 小統計卡片(價格統計卡片),單一商品頁頭部
-            CrawlLogTable.tsx
-            ProductRankingChart.tsx
-            temp.tsx
-│   │   ├── lib/                      # 資料取得邏輯（fetch 封裝）
-│   │   │   ├──api/   
-│   │   │   │   ├── index.ts                #統一輸出
-│   │   │   │   ├── categories.ts
-│   │   │   │   ├── admin.ts
-│   │   │   │   ├── keyword.ts
-│   │   │   │   └── product.ts
-│   │   ├── types/                    # TypeScript 共用檔案
-│   │   │   ├── index.ts                    #統一輸出                  
-│   │   │   ├── product.ts
-│   │   │   ├── category.ts
-│   │   │   ├── keyword.ts
-│   │   │   ├── admin.ts
-│   │   │   └── crawl.ts
-│   ├── public/                   # 靜態資源（圖片、圖示等）
-│   ├── styles/
-│   │   └── globals.css
-│   ├── tailwind.config.ts
-│   ├── tsconfig.json
-│   ├── .env.local
-│   └── package.json
+│   │   ├── app/                          # Next.js App Router 頁面目錄
+│   │   │   ├── layout.tsx                # 全域 layout（含 sidebar、header）
+│   │   │   ├── page.tsx                  # 首頁：熱門商品排行榜
+│   │   │   ├── globals.css               # 全域 CSS 樣式
+│   │   │   ├── favicon.ico               # 網站圖示
+│   │   │   ├── product/                  # 商品相關頁面
+│   │   │   │   └── [id]/                 # 動態路由：單一商品分析頁
+│   │   │   │       └── page.tsx          # 商品詳情頁面組件
+│   │   │   ├── keywords/                 # 熱門關鍵字分析頁面
+│   │   │   │   └── page.tsx              # 關鍵字分析頁面組件
+│   │   │   ├── categories/               # 類別分析頁面
+│   │   │   │   └── page.tsx              # 類別分析頁面組件
+│   │   │   ├── admin/                    # 後台管理頁面
+│   │   │   │   └── page.tsx              # 後台管理頁面組件
+│   │   │   └── api/                      # Next.js API Routes（直接查詢 Supabase）
+│   │   │       ├── products/             # 商品相關 API
+│   │   │       │   ├── route.ts          # 商品列表 API
+│   │   │       │   └── top/              # 熱門商品 API
+│   │   │       │       └── route.ts      # 熱門商品排行 API
+│   │   │       ├── categories/           # 分類相關 API
+│   │   │       ├── keywords/             # 關鍵字相關 API
+│   │   │       ├── admin/                # 後台管理 API
+│   │   │       └── snapshots/            # 商品快照 API
+│   │   │           └── route.ts          # 快照資料 API
+│   │   ├── components/                   # React 共用元件
+│   │   │   ├── layout/                   # 版面配置元件
+│   │   │   │   ├── Header.tsx            # 頂部導航欄元件
+│   │   │   │   └── Sidebar.tsx           # 側邊欄導航元件
+│   │   │   ├── charts/                   # 圖表元件
+│   │   │   │   ├── ProductRankingChart.tsx     # 長條圖（熱門商品排行榜）- 首頁
+│   │   │   │   ├── ProductReviewTrendChart.tsx # 折線圖（熱度變化趨勢）- 首頁
+│   │   │   │   ├── TrendChart.tsx              # 折線圖（單商品價格趨勢）- 商品詳情頁
+│   │   │   │   ├── KeywordChart.tsx            # 柱狀圖（熱門關鍵字）- 關鍵字分析頁
+│   │   │   │   ├── CategoryBarChart.tsx        # 堆疊長條圖（分類商品成長趨勢）- 類別分析頁
+│   │   │   │   ├── ProductOutlierChart.tsx     # 折線圖 + 異常點（商品異常價格波動）- 商品詳情頁
+│   │   │   │   ├── KeywordHeatMap.tsx          # 熱力圖（熱門關鍵字熱力圖）- 關鍵字分析頁
+│   │   │   │   └── GrowthRadarChart.tsx        # 雷達圖（成長趨勢分析）
+│   │   │   ├── cards/                    # 卡片元件
+│   │   │   │   ├── PriceBox.tsx          # 價格統計卡片 - 商品詳情頁頭部
+│   │   │   │   └── ProductCard.tsx       # 商品卡片 - 首頁與類別分析頁
+│   │   │   ├── table/                    # 表格元件
+│   │   │   │   ├── CrawlLogTable.tsx     # 爬蟲日誌表格 - 後台管理頁
+│   │   │   │   ├── ProductTable.tsx      # 商品資料表格
+│   │   │   │   ├── KeywordManager.tsx    # 關鍵字管理表格
+│   │   │   │   └── TriggerButton.tsx     # 觸發按鈕元件
+│   │   │   ├── admin/                    # 後台管理專用元件
+│   │   │   ├── CategoryDistribution.tsx  # 類別分佈圖表元件
+│   │   │   ├── KeywordTrend.tsx          # 關鍵字趨勢元件
+│   │   │   └── ProductTrend.tsx          # 商品趨勢元件
+│   │   ├── contexts/                     # React Context 狀態管理
+│   │   │   ├── SidebarContext.tsx        # 側邊欄狀態管理
+│   │   │   └── ThemeContext.tsx          # 主題切換狀態管理
+│   │   ├── lib/                          # 工具函式庫
+│   │   │   ├── api/                      # API 呼叫封裝
+│   │   │   │   ├── index.ts              # API 統一輸出
+│   │   │   │   ├── categories.ts         # 分類相關 API 呼叫
+│   │   │   │   ├── admin.ts              # 後台管理 API 呼叫
+│   │   │   │   ├── keywords.ts           # 關鍵字 API 呼叫（修正檔名）
+│   │   │   │   ├── product.ts            # 商品 API 呼叫
+│   │   │   │   └── snapshots.ts          # 快照 API 呼叫
+│   │   │   └── transform/                # 資料轉換工具
+│   │   │       └── product.ts            # 商品資料轉換函式
+│   │   ├── types/                        # TypeScript 型別定義
+│   │   │   ├── index.ts                  # 型別統一輸出
+│   │   │   ├── product.ts                # 商品相關型別定義
+│   │   │   ├── category.ts               # 分類相關型別定義
+│   │   │   ├── keyword.ts                # 關鍵字相關型別定義
+│   │   │   ├── admin.ts                  # 後台管理型別定義
+│   │   │   └── crawl.ts                  # 爬蟲相關型別定義
+│   │   ├── utils/                        # 通用工具函式
+│   │   └── tests/                        # 前端測試檔案
+│   ├── public/                           # 靜態資源目錄
+│   │   ├── next.svg                      # Next.js 標誌
+│   │   ├── vercel.svg                    # Vercel 標誌
+│   │   ├── file.svg                      # 檔案圖示
+│   │   ├── globe.svg                     # 地球圖示
+│   │   └── window.svg                    # 視窗圖示
+│   ├── node_modules/                     # npm 依賴套件（自動生成）
+│   ├── README.md                         # 前端專案說明文件
+│   ├── next.config.ts                    # Next.js 設定檔（圖片域名、開發環境設定）
+│   ├── tailwind.config.ts                # Tailwind CSS 設定檔
+│   ├── tsconfig.json                     # TypeScript 設定檔
+│   ├── postcss.config.js                 # PostCSS 設定檔
+│   ├── eslint.config.mjs                 # ESLint 程式碼檢查設定
+│   ├── next-env.d.ts                     # Next.js 型別定義（自動生成）
+│   ├── package.json                      # npm 套件管理檔
+│   └── pnpm-lock.yaml                    # pnpm 鎖定檔案
 │
-├── backend/                      # 後端 API（FastAPI）
-│   ├── .env                         # 資料庫與服務環境變數
-│   ├── config.py                    # 設定管理（環境變數、DB 連線等）
-│   ├── exceptions.py                # 自訂例外與統一錯誤處理
-│   ├── main.py                      # FastAPI 主入口
-│   ├── requirements.txt             # 生產依賴
-│   ├── requirements-dev.txt         # 開發依賴（pytest, coverage 等）
-│   ├── auth/                        # 權限驗證（JWT、OAuth 等）
-│   │   └── ...                      # 權限相關模組
-│   ├── database/                    # 資料庫連線與操作
-│   │   └── client.py                # SQLAlchemy 連線與 session 管理
-│   ├── logs/                        # 日誌輸出（log 檔案集中管理）
-│   │   └── ...                      # log 檔案或 log utility
-│   ├── middleware/                  # 中介軟體（CORS、請求日誌等）
-│   │   └── ...                      # middleware 實作
-│   ├── migrations/                  # 資料庫 schema 遷移（Alembic 等）
-│   │   └── ...                      # 不要手動在 Supabase 建表，全部用 Alembic migration 管理
-                                    migration script
-│   ├── models/                      # ORM 資料模型
-│   │   ├── __init__.py              # 匯出所有 model
-│   │   ├── product.py               # 商品主表
-│   │   ├── product_snapshots.py     # 商品快照表
-│   │   ├── categories.py            # 商品分類表
-│   │   ├── platform.py              # 平台表
-│   │   ├── keywords.py              # 熱門關鍵字表
-│   │   ├── crawl_logs.py            # 爬蟲紀錄表
-│   │   └── ...                      # 其他模型
-│   ├── routers/                     # API 路由
-│   │   ├── __init__.py
-│   │   ├── products.py              # 商品相關 API
-│   │   ├── categories.py            # 分類相關 API
-│   │   ├── keywords.py              # 關鍵字相關 API
-│   │   ├── admin.py                 # 後台管理 API
-│   │   └── ...                      # 其他路由
-│   ├── schemas/                     # Pydantic schema（資料驗證與序列化）
-│   │   └── ...                      # 各資源 schema
-│   ├── services/                    # 商業邏輯（分析、計算等）
-│   │   └── trend_analysis.py        # 趨勢分析服務
-│   │   └── ...                      # 其他服務
-│   ├── tests/                       # 測試，可細分 unit/、integration/
-│   │   └── ...                      # 測試檔案
-│   ├── utils/                       # 工具程式
-│   │   └── ...                      # 共用工具
-│   └── README.md                 # 專案說明文件
+├── backend/                          # 後端 API（FastAPI + SQLAlchemy）
+│   ├── __init__.py                   # Python 套件初始化檔
+│   ├── __pycache__/                  # Python 編譯快取（自動生成）
+│   ├── main.py                       # FastAPI 主入口（CORS、中介軟體、路由註冊）
+│   ├── config.py                     # 設定管理（環境變數、資料庫連線設定）
+│   ├── requirements.txt              # Python 依賴套件清單
+│   ├── alembic.ini                   # Alembic 資料庫遷移設定檔
+│   ├── venv/                         # Python 虛擬環境（開發用）
+│   ├── auth/                         # 權限驗證模組（JWT、OAuth 等）
+│   ├── database/                     # 資料庫連線與操作
+│   │   ├── __pycache__/              # Python 編譯快取
+│   │   └── client.py                 # SQLAlchemy 非同步連線與 session 管理
+│   ├── logs/                         # 日誌輸出目錄
+│   ├── middleware/                   # 中介軟體模組
+│   │   ├── __init__.py               # 中介軟體模組初始化
+│   │   ├── __pycache__/              # Python 編譯快取
+│   │   ├── auth.py                   # JWT 驗證中介軟體
+│   │   ├── exception_handler.py      # 全域例外處理中介軟體
+│   │   └── logging.py                # 請求日誌中介軟體
+│   ├── migrations/                   # Alembic 資料庫遷移管理
+│   │   ├── __pycache__/              # Python 編譯快取
+│   │   ├── versions/                 # 遷移版本檔案目錄
+│   │   ├── README                    # 遷移說明文件
+│   │   ├── env.py                    # Alembic 環境設定
+│   │   └── script.py.mako            # 遷移腳本模板
+│   ├── models/                       # SQLAlchemy ORM 資料模型
+│   │   ├── __init__.py               # 模型統一匯出（Base、所有模型類別）
+│   │   ├── __pycache__/              # Python 編譯快取
+│   │   ├── product.py                # 商品主表模型
+│   │   ├── product_snapshots.py      # 商品快照表模型（價格歷史記錄）
+│   │   ├── categories.py             # 商品分類表模型
+│   │   ├── platform.py               # 電商平台表模型
+│   │   ├── keywords.py               # 熱門關鍵字表模型
+│   │   ├── keyword_trend.py          # 關鍵字趨勢表模型
+│   │   └── crawl_logs.py             # 爬蟲執行紀錄表模型
+│   ├── routers/                      # FastAPI 路由模組
+│   │   ├── __init__.py               # 路由模組初始化
+│   │   ├── __pycache__/              # Python 編譯快取
+│   │   ├── products.py               # 商品相關 API 路由
+│   │   ├── categories.py             # 分類相關 API 路由
+│   │   ├── keywords.py               # 關鍵字相關 API 路由
+│   │   ├── admin.py                  # 後台管理 API 路由
+│   │   └── snapshots.py              # 商品快照 API 路由
+│   ├── schemas/                      # Pydantic 資料驗證與序列化模型
+│   │   ├── __init__.py               # Schema 模組初始化
+│   │   ├── __pycache__/              # Python 編譯快取
+│   │   ├── product.py                # 商品相關 Schema（ProductRead、ProductCreate 等）
+│   │   ├── category.py               # 分類相關 Schema
+│   │   ├── keyword.py                # 關鍵字相關 Schema
+│   │   ├── keyword_trend.py          # 關鍵字趨勢 Schema
+│   │   ├── snapshot.py               # 商品快照 Schema
+│   │   └── price_services.py         # 價格服務相關 Schema
+│   ├── services/                     # 商業邏輯服務層
+│   │   ├── __init__.py               # 服務模組統一匯出
+│   │   ├── __pycache__/              # Python 編譯快取
+│   │   ├── trend_analysis.py         # 趨勢分析服務（價格趨勢、類別成長分析）
+│   │   ├── product_rank.py           # 商品排行服務（熱門商品、成長最快商品）
+│   │   ├── keyword_analysis.py       # 關鍵字分析服務（熱門關鍵字、熱力圖）
+│   │   └── snapshot_processor.py     # 快照處理服務（價格變化、異常檢測）
+│   ├── crud/                         # 資料庫 CRUD 操作層
+│   │   ├── __init__.py               # CRUD 模組初始化
+│   │   ├── __pycache__/              # Python 編譯快取
+│   │   ├── product.py                # 商品 CRUD 操作
+│   │   ├── category.py               # 分類 CRUD 操作
+│   │   ├── keyword.py                # 關鍵字 CRUD 操作
+│   │   └── snapshot.py               # 快照 CRUD 操作
+│   ├── tests/                        # 測試檔案目錄
+│   └── utils/                        # 通用工具函式
 │
-├── shared/                       # 前後端共用 schema 或常數
-│   ├── types.ts                  # 共用 TypeScript 類型定義
-│   ├── constants.ts              # 平台定義、分類表等
-│   └── interfaces/               # 若使用 Swagger/OpenAPI 可共用
+├── N8N workflow/                     # N8N 爬蟲工作流程設定
+│   └── 電商專案 github版.json        # N8N 工作流程設定檔（包含 Momo、Shopee、Amazon 爬蟲流程）
 │
-├── n8n/                          # 爬蟲流程設定與備份
-│   ├── momo-workflow.json
-│   ├── shopee-workflow.json
-│   ├── amazon-workflow.json
-│   └── README.md                 # 說明如何運作與部署
-│
-├── docker-compose.yml           # 部署組合（可包含 FastAPI + n8n + DB）
-├── .env                         # 環境變數（如 Supabase、API Key）
-└── LICENSE
+├── docker-compose.yml               # Docker 容器編排設定檔
+│                                    # 包含 N8N 自動化工具 (port 5678) 和 Crawl4AI 爬蟲服務 (port 11235)
+│                                    # 支援環境變數：CRAWL4AI_API_TOKEN、GEMINI_API_KEY、OPENAI_API_KEY
+├── README.md                        # 專案主要說明文件
+│                                    # 包含架構說明、部署方式、環境變數設定等完整文件
+├── LICENSE                          # MIT 開源授權條款
+└── 專案結構.txt                     # 本檔案：詳細專案結構說明
